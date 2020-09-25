@@ -1,5 +1,6 @@
 package com.zhiwei.word.wordversion;
 
+import com.sun.istack.internal.NotNull;
 import com.zhiwei.util.Util;
 import com.zhiwei.word.BaseWord;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -7,8 +8,6 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.io.IOException;
  * @date 2020/9/17 16:11
  * @week 星期四
  */
+@SuppressWarnings("unused")
 public class SCSImageWord extends BaseWord {
     private SCSImageWord() throws IOException {
         super(null);
@@ -38,7 +38,6 @@ public class SCSImageWord extends BaseWord {
     }
 
     @NotNull
-    @Contract(" -> new")
     public static SCSImageWord init() throws IOException {
         return new SCSImageWord();
     }

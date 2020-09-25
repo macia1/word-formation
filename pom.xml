@@ -34,13 +34,6 @@
             <version>1.7.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>20.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!--easyExcel-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -92,13 +85,6 @@
             <version>1.7.3</version>
         </dependency>
 
-        <!--selenium web driver-->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.0.0-alpha-6</version>
-        </dependency>
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -123,6 +109,22 @@
                     <target>1.8</target>
                     <encoding>utf-8</encoding>
                 </configuration>
+            </plugin>
+            <!-- 要将源码放上去，需要加入这个插件 -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!--<plugin>
                 <groupId>org.springframework.boot</groupId>

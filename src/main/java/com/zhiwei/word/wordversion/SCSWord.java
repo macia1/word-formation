@@ -1,6 +1,7 @@
 package com.zhiwei.word.wordversion;
 
 import com.deepoove.poi.xwpf.XWPFParagraphWrapper;
+import com.sun.istack.internal.NotNull;
 import com.zhiwei.config.ContentFont;
 import com.zhiwei.config.ExcelTitles;
 import com.zhiwei.util.Util;
@@ -15,8 +16,6 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTInd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
@@ -294,7 +293,6 @@ public class SCSWord extends BaseWord {
      * @param tableRows 表格行
      * @param dataList  数据列表
      */
-    @Contract(pure = true)
     private void createTableBody(@NotNull List<XWPFTableRow> tableRows, @NotNull List<List<Object>> dataList) {
         Map<String, Integer> headerMap = super.monitor.getHeaders();
         for (int i = 1; i < tableRows.size(); i++) {
@@ -402,12 +400,7 @@ public class SCSWord extends BaseWord {
     }
 
     @NotNull
-    public static SCSWord init() {
-        try {
-            return new SCSWord();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static SCSWord init() throws IOException {
+        return new SCSWord();
     }
 }

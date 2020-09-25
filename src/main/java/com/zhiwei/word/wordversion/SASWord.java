@@ -1,6 +1,7 @@
 package com.zhiwei.word.wordversion;
 
 import com.deepoove.poi.util.TableTools;
+import com.sun.istack.internal.NotNull;
 import com.zhiwei.config.ContentFont;
 import com.zhiwei.config.ExcelTitles;
 import com.zhiwei.util.Util;
@@ -17,7 +18,6 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.jetbrains.annotations.NotNull;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTInd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;

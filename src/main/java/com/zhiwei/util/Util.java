@@ -3,14 +3,13 @@ package com.zhiwei.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.istack.internal.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.WebDriver;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -31,7 +30,6 @@ import java.util.Objects;
  */
 @Log4j2
 public class Util {
-    private WebDriver webDriver;
 
     private Util() {
     }
@@ -74,9 +72,7 @@ public class Util {
     public static String translationToString(@NotNull String text, @NotNull Language aims) throws Exception {
         Map<String, String> response = translation(text, aims);
         StringBuilder builder = new StringBuilder();
-        response.forEach((str, message) -> {
-            builder.append(message);
-        });
+        response.forEach((str, message) -> builder.append(message));
         return builder.toString();
     }
 
@@ -120,6 +116,7 @@ public class Util {
      * @throws IOException IO流一场
      */
     @NotNull
+    @SuppressWarnings("unused")
     public static BufferedImage setImageSize(String imagePath, int width, int height) throws IOException {
         InputStream inputStream = null;
         try {

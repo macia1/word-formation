@@ -1,6 +1,7 @@
 package com.zhiwei.word;
 
 import com.alibaba.excel.EasyExcel;
+import com.sun.istack.internal.NotNull;
 import com.zhiwei.config.ExcelTitles;
 import com.zhiwei.exception.WordTemplateVersionException;
 import com.zhiwei.util.ExcelMonitor;
@@ -10,7 +11,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.jetbrains.annotations.NotNull;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBookmark;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
@@ -89,7 +89,7 @@ public abstract class BaseWord extends XWPFDocument {
      *
      * @throws ExcelTitleIncompleteException excel文件的标题缺失异常
      */
-    protected final void readExcel(@NotNull InputStream excelInputStream, WordTemplateVersion templateVersion) throws ExcelTitleIncompleteException {
+    protected final void readExcel(@NotNull InputStream excelInputStream, @NotNull WordTemplateVersion templateVersion) throws ExcelTitleIncompleteException {
         //开始读取数据文件
         ExcelMonitor monitor = new ExcelMonitor();
         EasyExcel.read(excelInputStream, monitor).sheet(0).doRead();
