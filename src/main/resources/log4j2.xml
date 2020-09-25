@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%p %d{yyyy年MM月dd日 HH:mm:ss:SSS} %l %m%n"/>
+        </Console>
+        <!--<File name="logFile" fileName="./logs/test-classification.log">
+            <PatternLayout pattern="%p %d{yyyy年MM月dd日 HH:mm:ss:SSS} %l %m%n"/>
+        </File>-->
+        <!--<NoSql name="databaseAppender">
+            <MongoDb databaseName="log4j2" collectionName="data_manage" server="notebook.computer" username=""
+                     password=""/>
+        </NoSql>
+        <SMTP name="Mail" subject="logTest" to="zhongzhangqian@zhiweidata.com" from="1397863634@qq.com"
+              smtpProtocol="smtp" smtpHost="smtp.qq.com" smtpPort="587" bufferSize="50" smtpDebug="false"
+              smtpPassword="jzhqsdffrybviecj" smtpUsername="1397863634@qq.com">
+        </SMTP>-->
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>
