@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * word基本属性
@@ -38,7 +39,7 @@ public abstract class BaseWord extends XWPFDocument {
     protected OutputStream wordOut;
 
     protected BaseWord(String path) throws IOException {
-        super(BaseWord.class.getClassLoader().getResourceAsStream(path));
+        super(Objects.requireNonNull(BaseWord.class.getClassLoader().getResourceAsStream(path)));
     }
 
     /**

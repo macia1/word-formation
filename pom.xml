@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zhiwei</groupId>
-    <artifactId>word</artifactId>
+    <artifactId>wordFormation</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>word自动生成程序</description>
     <inceptionYear>2020/9/15</inceptionYear>
@@ -124,7 +124,7 @@
                     <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.1.0.RELEASE</version>
@@ -135,8 +135,20 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>WordFormation</name>
+            <url>http://maven.zhiweidata.com:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>nexus-releases</id>
+            <name>WordFormation</name>
+            <url>http://maven.zhiweidata.com:8081/nexus/content/groups/public</url>
+        </repository>
+    </distributionManagement>
 </project>

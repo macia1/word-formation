@@ -18,7 +18,7 @@ public class WordTest {
     public void sasWord() throws IOException, BaseWord.ExcelTitleIncompleteException {
         BaseWord.start(
                 WordTemplateVersion.SAS,
-                new FileInputStream("testFiles/数据上传模板(1).xlsx"),
+                new FileInputStream("testFiles/数据上传模板.xlsx"),
                 new FileOutputStream("testWrite/write-sas.docx")
         );
     }
@@ -27,7 +27,7 @@ public class WordTest {
     public void scsWord() throws IOException, BaseWord.ExcelTitleIncompleteException {
         BaseWord.start(
                 WordTemplateVersion.SCS,
-                new FileInputStream("testFiles/数据上传模板(1).xlsx"),
+                new FileInputStream("testFiles/数据上传模板.xlsx"),
                 new FileOutputStream("testWrite/write-scs.docx")
         );
     }
