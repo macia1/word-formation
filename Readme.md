@@ -10,6 +10,10 @@ word自动生成工具
 
 enum：com.zhiwei.config.ExcelTitles
 
+## 支持的word版本
+
+enum: com.zhiwei.word.WordTemplateVersion
+
 # Maven
 
 ```xml
