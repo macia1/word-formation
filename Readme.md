@@ -6,6 +6,10 @@ word自动生成工具
 
 参见Junit测试类：com.zhiwei.word.wordversion.WordTest
 
+## 固定excel表头
+
+enum：com.zhiwei.config.ExcelTitles
+
 # Maven
 
 ```xml

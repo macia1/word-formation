@@ -7,7 +7,6 @@ package com.zhiwei.word;
  * @date 2020/9/15 15:25
  * @week 星期二
  */
-@SuppressWarnings({"unused", "DanglingJavadoc"})
 public enum WordTemplateVersion {
     /**
      * 1、SCS版本格式（全部中文+韩文版）：
@@ -29,8 +28,7 @@ public enum WordTemplateVersion {
      * a. 四个板块韩文版跟SAS版本保持一致，字体BatangChe，字号小二；
      * b. 韩文资讯标题字体BatangChe，字号小四，中文标题字体仿宋，字号11，日期及域名字体仿宋，字号10，韩文正文字体BatangChe，字号小五，单倍行距，两端对齐；
      */
-//    SCS_IMAGE("src/main/resources/scs_image/SCS转图片版本0904.docx")
-    ;
+    SCS_IMAGE("SCS-image-template.docx");
 
     private String templateFile;
 

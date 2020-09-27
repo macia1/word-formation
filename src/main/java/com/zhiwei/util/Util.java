@@ -3,7 +3,6 @@ package com.zhiwei.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.istack.internal.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -34,13 +33,13 @@ public class Util {
     private Util() {
     }
 
-    @NotNull
-    public static String getColorString(@NotNull Color color) {
+    
+    public static String getColorString( Color color) {
         return getHexString(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    @NotNull
-    public static String getHexString(@NotNull Integer... numbers) {
+    
+    public static String getHexString( Integer... numbers) {
         StringBuilder builder = new StringBuilder();
         for (Integer number : numbers) {
             String numberStr = Integer.toHexString(number);
@@ -60,7 +59,7 @@ public class Util {
      * @param unit   单位
      * @return 像素
      */
-    public static double getPixel(Double length, @NotNull LengthUnit unit) {
+    public static double getPixel(Double length,  LengthUnit unit) {
         if (unit == LengthUnit.centimeter) {
             //厘米换算为像素
             return length * 567D;
@@ -68,8 +67,8 @@ public class Util {
         return 0D;
     }
 
-    @NotNull
-    public static String translationToString(@NotNull String text, @NotNull Language aims) throws Exception {
+    
+    public static String translationToString( String text,  Language aims) throws Exception {
         Map<String, String> response = translation(text, aims);
         StringBuilder builder = new StringBuilder();
         response.forEach((str, message) -> builder.append(message));
@@ -83,8 +82,8 @@ public class Util {
      * @param aims 目标语言
      * @return 翻译得到的文本
      */
-    @NotNull
-    public static Map<String, String> translation(@NotNull String text, @NotNull Language aims) throws Exception {
+    
+    public static Map<String, String> translation( String text,  Language aims) throws Exception {
         String urlStr = "http://fanyi.youdao.com/translate?&doctype=json&type=" + aims.getUrlValue() + "&i=" + URLEncoder.encode(text, "UTF-8");
         HttpClient client = HttpClients.createDefault();
         HttpGet get = new HttpGet(urlStr);
@@ -115,7 +114,7 @@ public class Util {
      * @return 缩放后的图片
      * @throws IOException IO流一场
      */
-    @NotNull
+    
     @SuppressWarnings("unused")
     public static BufferedImage setImageSize(String imagePath, int width, int height) throws IOException {
         InputStream inputStream = null;

@@ -1,7 +1,6 @@
 package com.zhiwei.word.wordversion;
 
 import com.deepoove.poi.xwpf.XWPFParagraphWrapper;
-import com.sun.istack.internal.NotNull;
 import com.zhiwei.config.ContentFont;
 import com.zhiwei.config.ExcelTitles;
 import com.zhiwei.util.Util;
@@ -126,8 +125,8 @@ public class SCSWord extends BaseWord {
             super.createParagraph();
         });
         //目录表格写入完毕，写入全部数据
-        Map<String, Integer> headerMap = super.monitor.getHeaders();
-        super.monitor.getDataList().forEach(dataColumn -> {
+        Map<String, Integer> headerMap = BaseWord.headerMap;
+        BaseWord.dataList.forEach(dataColumn -> {
             Bookmark bookmark = (Bookmark) dataColumn.get(dataColumn.size() - 1);
             XWPFParagraph paragraph = super.createParagraph();
             paragraph.createRun().addBreak(BreakType.PAGE);
@@ -293,8 +292,8 @@ public class SCSWord extends BaseWord {
      * @param tableRows 表格行
      * @param dataList  数据列表
      */
-    private void createTableBody(@NotNull List<XWPFTableRow> tableRows, @NotNull List<List<Object>> dataList) {
-        Map<String, Integer> headerMap = super.monitor.getHeaders();
+    private void createTableBody(List<XWPFTableRow> tableRows,List<List<Object>> dataList) {
+        Map<String, Integer> headerMap = BaseWord.headerMap;
         for (int i = 1; i < tableRows.size(); i++) {
             XWPFTableRow tableRow = tableRows.get(i);
             tableRow.setHeight((int) Util.getPixel(1.11D, Util.LengthUnit.centimeter));
@@ -365,7 +364,7 @@ public class SCSWord extends BaseWord {
      * @param tableTitle 表格标题单元格
      * @param content    标题
      */
-    private void setTableTitle(@NotNull XWPFTableCell tableTitle, String content, String colorStr) {
+    private void setTableTitle(XWPFTableCell tableTitle, String content, String colorStr) {
         tableTitle.setColor(colorStr);
         //表格内容居中
         CTTc cttc = tableTitle.getCTTc();
@@ -389,7 +388,7 @@ public class SCSWord extends BaseWord {
      * @param linkText  超链接显示的文本
      * @param action    锚点名称（书签名称）
      */
-    public void createHyperlink(@NotNull XWPFParagraph paragraph, String linkText, String action, String fontName, @NotNull ContentFont contentFont) {
+    public void createHyperlink(XWPFParagraph paragraph, String linkText, String action, String fontName,ContentFont contentFont) {
         XWPFParagraphWrapper wrapper = new XWPFParagraphWrapper(paragraph);
         XWPFRun hyperRun = wrapper.insertNewHyperLinkRun(paragraph.createRun(), "#" + action);
         hyperRun.setText(linkText);
@@ -398,8 +397,7 @@ public class SCSWord extends BaseWord {
         hyperRun.setColor(Util.getColorString(new Color(5, 99, 193)));
         hyperRun.setUnderline(UnderlinePatterns.SINGLE);
     }
-
-    @NotNull
+    
     public static SCSWord init() throws IOException {
         return new SCSWord();
     }
