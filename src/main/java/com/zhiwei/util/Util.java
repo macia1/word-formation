@@ -9,6 +9,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -34,12 +35,14 @@ public class Util {
     }
 
     
-    public static String getColorString( Color color) {
+    @NotNull
+    public static String getColorString(@NotNull Color color) {
         return getHexString(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     
-    public static String getHexString( Integer... numbers) {
+    @NotNull
+    public static String getHexString(@NotNull Integer... numbers) {
         StringBuilder builder = new StringBuilder();
         for (Integer number : numbers) {
             String numberStr = Integer.toHexString(number);
@@ -68,7 +71,8 @@ public class Util {
     }
 
     
-    public static String translationToString( String text,  Language aims) throws Exception {
+    @NotNull
+    public static String translationToString(String text, Language aims) throws Exception {
         Map<String, String> response = translation(text, aims);
         StringBuilder builder = new StringBuilder();
         response.forEach((str, message) -> builder.append(message));
@@ -83,7 +87,8 @@ public class Util {
      * @return 翻译得到的文本
      */
     
-    public static Map<String, String> translation( String text,  Language aims) throws Exception {
+    @NotNull
+    public static Map<String, String> translation(String text, @NotNull Language aims) throws Exception {
         String urlStr = "http://fanyi.youdao.com/translate?&doctype=json&type=" + aims.getUrlValue() + "&i=" + URLEncoder.encode(text, "UTF-8");
         HttpClient client = HttpClients.createDefault();
         HttpGet get = new HttpGet(urlStr);
@@ -115,6 +120,7 @@ public class Util {
      * @throws IOException IO流一场
      */
     
+    @NotNull
     @SuppressWarnings("unused")
     public static BufferedImage setImageSize(String imagePath, int width, int height) throws IOException {
         InputStream inputStream = null;

@@ -2,10 +2,9 @@ package com.zhiwei.word.wordversion;
 
 import com.deepoove.poi.xwpf.XWPFParagraphWrapper;
 import com.zhiwei.config.ContentFont;
-import com.zhiwei.config.ExcelTitles;
 import com.zhiwei.util.Util;
 import com.zhiwei.word.BaseWord;
-import com.zhiwei.word.Bookmark;
+import com.zhiwei.word.ExcelEntity;
 import com.zhiwei.word.WordTemplateVersion;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -15,6 +14,8 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTInd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
@@ -85,7 +86,7 @@ public class SCSWord extends BaseWord {
      */
     private void createWordBody() {
         //读取数据并进行分类筛选
-        Map<String, List<List<Object>>> classificationMap = super.classification(ExcelTitles.中文品牌分类.name());
+        Map<String, List<ExcelEntity>> classificationMap = super.classification(Language.chinese);
         classificationMap.forEach((classification, dataList) -> {
             //输出分类标题
             XWPFParagraph paragraph = super.createParagraph();
@@ -125,9 +126,8 @@ public class SCSWord extends BaseWord {
             super.createParagraph();
         });
         //目录表格写入完毕，写入全部数据
-        Map<String, Integer> headerMap = BaseWord.headerMap;
         BaseWord.dataList.forEach(dataColumn -> {
-            Bookmark bookmark = (Bookmark) dataColumn.get(dataColumn.size() - 1);
+            Bookmark bookmark = dataColumn.getBookmark();
             XWPFParagraph paragraph = super.createParagraph();
             paragraph.createRun().addBreak(BreakType.PAGE);
             paragraph.setAlignment(ParagraphAlignment.LEFT);
@@ -146,14 +146,14 @@ public class SCSWord extends BaseWord {
             xwpfRun.setFontFamily("Arial");
             xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
             xwpfRun.setText(title);
-            String text = (String) dataColumn.get(headerMap.get(ExcelTitles.韩文标题.name()));
+            String text = dataColumn.getKoreanTitle();
             if (Objects.nonNull(text)) {
                 xwpfRun = paragraph.createRun();
                 xwpfRun.setFontFamily("BatangChe");
                 xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
                 xwpfRun.setText(text);
                 //写出中文标题
-                text = (String) dataColumn.get(headerMap.get(ExcelTitles.标题.name()));
+                text = dataColumn.getTitle();
                 if (Objects.nonNull(text)) {
                     paragraph = super.createParagraph();
                     xwpfRun = paragraph.createRun();
@@ -169,7 +169,7 @@ public class SCSWord extends BaseWord {
                 }
             } else {
                 //没有韩文输出中文
-                text = (String) dataColumn.get(headerMap.get(ExcelTitles.标题.name()));
+                text = dataColumn.getTitle();
                 if (Objects.nonNull(text)) {
                     xwpfRun = paragraph.createRun();
                     xwpfRun.setFontFamily("微软雅黑");
@@ -188,11 +188,11 @@ public class SCSWord extends BaseWord {
             xwpfRun = paragraph.createRun();
             xwpfRun.setFontFamily("Arial");
             xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
-            xwpfRun.setText(dataColumn.get(headerMap.get(ExcelTitles.渠道域名.name())) + " ");
+            xwpfRun.setText(dataColumn.getChannelDomainName() + " ");
             xwpfRun = paragraph.createRun();
             xwpfRun.setFontFamily("微软雅黑");
             xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
-            xwpfRun.setText("/ " + dataColumn.get(headerMap.get(ExcelTitles.渠道.name())));
+            xwpfRun.setText("/ " + dataColumn.getChannel());
 
             title = "Paper Date: ";
             paragraph = super.createParagraph();
@@ -204,7 +204,7 @@ public class SCSWord extends BaseWord {
             xwpfRun = paragraph.createRun();
             xwpfRun.setFontFamily("Arial");
             xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
-            xwpfRun.setText(((String) dataColumn.get(headerMap.get(ExcelTitles.时间.name()))).replaceAll("/", "."));
+            xwpfRun.setText(dataColumn.getTime().replaceAll("/", "."));
 
             title = "Summary: ";
             paragraph = super.createParagraph();
@@ -215,7 +215,7 @@ public class SCSWord extends BaseWord {
             xwpfRun.setText(title);
 
             //韩文
-            text = (String) dataColumn.get(headerMap.get(ExcelTitles.韩文摘要.name()));
+            text = dataColumn.getKoreanAbstract();
             if (Objects.nonNull(text)) {
                 String[] texts = text.split("\n");
                 for (String sentence : texts) {
@@ -235,7 +235,7 @@ public class SCSWord extends BaseWord {
                 xwpfRun = paragraph.createRun();
                 xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
                 xwpfRun.setFontFamily("微软雅黑");
-                text = (String) dataColumn.get(headerMap.get(ExcelTitles.标题.name()));
+                text = dataColumn.getTitle();
                 text = Objects.isNull(text) ? "" : text;
                 xwpfRun.setText(text);
 
@@ -244,13 +244,13 @@ public class SCSWord extends BaseWord {
                 xwpfRun = paragraph.createRun();
                 xwpfRun.setFontFamily("微软雅黑");
                 xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
-                text = (String) dataColumn.get(headerMap.get(ExcelTitles.时间.name()));
+                text = dataColumn.getTime();
                 text = text.replaceAll("/", "-");
-                text = text + " 来源于：" + dataColumn.get(headerMap.get(ExcelTitles.渠道.name()));
+                text = text + " 来源于：" + dataColumn.getChannel();
                 xwpfRun.setText(text);
 
                 //正文
-                text = (String) dataColumn.get(headerMap.get(ExcelTitles.全文.name()));
+                text = dataColumn.getFullText();
                 text = Objects.isNull(text) ? "" : text;
                 texts = text.split("\n");
                 for (String sentence : texts) {
@@ -267,7 +267,7 @@ public class SCSWord extends BaseWord {
                 }
             } else {
                 //正文
-                text = (String) dataColumn.get(headerMap.get(ExcelTitles.全文.name()));
+                text = dataColumn.getFullText();
                 text = Objects.isNull(text) ? "" : text;
                 String[] texts = text.split("\n");
                 for (String sentence : texts) {
@@ -292,13 +292,12 @@ public class SCSWord extends BaseWord {
      * @param tableRows 表格行
      * @param dataList  数据列表
      */
-    private void createTableBody(List<XWPFTableRow> tableRows,List<List<Object>> dataList) {
-        Map<String, Integer> headerMap = BaseWord.headerMap;
+    private void createTableBody(@NotNull List<XWPFTableRow> tableRows, List<ExcelEntity> dataList) {
         for (int i = 1; i < tableRows.size(); i++) {
             XWPFTableRow tableRow = tableRows.get(i);
             tableRow.setHeight((int) Util.getPixel(1.11D, Util.LengthUnit.centimeter));
             List<XWPFTableCell> tableCells = tableRow.getTableCells();//获得行中的单元格
-            List<Object> dataColumn = dataList.get(i - 1);//获得对应的一行数据
+            ExcelEntity dataColumn = dataList.get(i - 1);//获得对应的一行数据
             try {
                 int index = 0;
                 //设置No列
@@ -307,27 +306,27 @@ public class SCSWord extends BaseWord {
                 XWPFRun xwpfRun = paragraph.createRun();
                 xwpfRun.setFontFamily("Arial");
                 xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
-                xwpfRun.setText((String) dataColumn.get(headerMap.get(ExcelTitles.序号.name())));
+                xwpfRun.setText(dataColumn.getSerialNumber());
 
                 //设置Headline列
                 index++;
-                String cellContent = (String) dataColumn.get(headerMap.get(ExcelTitles.韩文标题.name()));//韩文标题
+                String cellContent = dataColumn.getKoreanTitle();//韩文标题
                 tableCell = tableCells.get(index);
                 paragraph = tableCell.getParagraphArray(0);
-                Bookmark bookmark = (Bookmark) dataColumn.get(dataColumn.size() - 1);//获得书签信息
+                Bookmark bookmark = dataColumn.getBookmark();//获得书签信息
                 //韩文标题超链接
                 this.createHyperlink(paragraph, cellContent, bookmark.getTarget(), "BatangChe", ContentFont.小五);
                 paragraph.setAlignment(ParagraphAlignment.LEFT);//设置左对齐，防止换行出现混乱
                 paragraph.getRuns().get(0).addBreak();//换行
                 //中文标题超链接
-                cellContent = (String) dataColumn.get(headerMap.get(ExcelTitles.标题.name()));//中文标题
+                cellContent = dataColumn.getTitle();//中文标题
                 this.createHyperlink(paragraph, cellContent, bookmark.getTarget(), "微软雅黑", ContentFont.小五);
                 super.createBookmark(paragraph, bookmark.getReturnMark());
 
                 //设置Media Name列
                 index++;
                 tableCell = tableCells.get(index);
-                cellContent = (String) dataColumn.get(headerMap.get(ExcelTitles.渠道域名.name()));
+                cellContent = dataColumn.getChannelDomainName();
                 paragraph = tableCell.getParagraphArray(0);
                 xwpfRun = paragraph.createRun();
                 xwpfRun.setText(cellContent);
@@ -336,7 +335,7 @@ public class SCSWord extends BaseWord {
 
                 paragraph = tableCell.addParagraph();
                 xwpfRun = paragraph.createRun();
-                cellContent = (String) dataColumn.get(headerMap.get(ExcelTitles.渠道.name()));
+                cellContent = dataColumn.getChannel();
                 xwpfRun.setText(cellContent);
                 xwpfRun.setFontFamily("微软雅黑");
                 xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
@@ -344,7 +343,7 @@ public class SCSWord extends BaseWord {
                 //设置Publish Date
                 index++;
                 tableCell = tableCells.get(index);
-                cellContent = (String) dataColumn.get(headerMap.get(ExcelTitles.时间.name()));
+                cellContent = dataColumn.getTime();
                 cellContent = cellContent.replaceAll("/", ".");
                 paragraph = tableCell.getParagraphArray(0);
                 xwpfRun = paragraph.createRun();
@@ -364,7 +363,7 @@ public class SCSWord extends BaseWord {
      * @param tableTitle 表格标题单元格
      * @param content    标题
      */
-    private void setTableTitle(XWPFTableCell tableTitle, String content, String colorStr) {
+    private void setTableTitle(@NotNull XWPFTableCell tableTitle, String content, String colorStr) {
         tableTitle.setColor(colorStr);
         //表格内容居中
         CTTc cttc = tableTitle.getCTTc();
@@ -388,7 +387,7 @@ public class SCSWord extends BaseWord {
      * @param linkText  超链接显示的文本
      * @param action    锚点名称（书签名称）
      */
-    public void createHyperlink(XWPFParagraph paragraph, String linkText, String action, String fontName,ContentFont contentFont) {
+    public void createHyperlink(XWPFParagraph paragraph, String linkText, String action, String fontName, @NotNull ContentFont contentFont) {
         XWPFParagraphWrapper wrapper = new XWPFParagraphWrapper(paragraph);
         XWPFRun hyperRun = wrapper.insertNewHyperLinkRun(paragraph.createRun(), "#" + action);
         hyperRun.setText(linkText);
@@ -397,7 +396,9 @@ public class SCSWord extends BaseWord {
         hyperRun.setColor(Util.getColorString(new Color(5, 99, 193)));
         hyperRun.setUnderline(UnderlinePatterns.SINGLE);
     }
-    
+
+    @NotNull
+    @Contract(" -> new")
     public static SCSWord init() throws IOException {
         return new SCSWord();
     }

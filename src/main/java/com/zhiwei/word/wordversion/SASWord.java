@@ -2,10 +2,9 @@ package com.zhiwei.word.wordversion;
 
 import com.deepoove.poi.util.TableTools;
 import com.zhiwei.config.ContentFont;
-import com.zhiwei.config.ExcelTitles;
 import com.zhiwei.util.Util;
 import com.zhiwei.word.BaseWord;
-import com.zhiwei.word.Bookmark;
+import com.zhiwei.word.ExcelEntity;
 import com.zhiwei.word.WordTemplateVersion;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -17,6 +16,8 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTInd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
@@ -49,7 +50,7 @@ public class SASWord extends BaseWord {
     public void start() {
         //删除无韩文翻译的文本
         BaseWord.dataList.removeIf(dataColumn ->
-                Objects.isNull(dataColumn.get(BaseWord.headerMap.get(ExcelTitles.韩文标题.name()))));
+                Objects.isNull(dataColumn.getKoreanTitle()));
         //创建开头三个空白段落
         for (int i = 0; i < 2; i++) {
             super.createParagraph();
@@ -63,13 +64,13 @@ public class SASWord extends BaseWord {
      * 根据分类写出表格
      */
     private void addTable() {
-        Map<String, List<List<Object>>> classificationMap = super.classification(ExcelTitles.韩文品牌分类.name());
+        Map<String, List<ExcelEntity>> classificationMap = super.classification(Language.korean);
         String tileBackgroundColor = Util.getColorString(new Color(0, 68, 129));//标题栏颜色
         BigInteger titleHeight = new BigInteger(Integer.toString((int) Util.getPixel(0.89D, Util.LengthUnit.centimeter)));//计算标题栏行高
         XWPFParagraph paragraph;
         Set<String> keySet = classificationMap.keySet();
         for (String classification : keySet) {
-            List<List<Object>> dataList = classificationMap.get(classification);
+            List<ExcelEntity> dataList = classificationMap.get(classification);
             //创建表格
             XWPFTable table = super.createTable();
             table.setWidth((int) Util.getPixel(15.55D, Util.LengthUnit.centimeter));
@@ -105,17 +106,17 @@ public class SASWord extends BaseWord {
                 tableRow = table.createRow();
                 super.createCells(tableRow, 1);
                 tableRow.setHeight((int) Util.getPixel(1.84D, Util.LengthUnit.centimeter));
-                List<Object> dataColumn = dataList.get(i);
+                ExcelEntity dataColumn = dataList.get(i);
                 cell = tableRow.getCell(0);
                 cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 paragraph = cell.getParagraphArray(0);//使用单元格自带段落
                 paragraph.setAlignment(ParagraphAlignment.BOTH);
                 //获得生成的书签
-                Bookmark bookmark = (Bookmark) dataColumn.get(dataColumn.size() - 1);
+                BaseWord.Bookmark bookmark = dataColumn.getBookmark();
                 xwpfRun = paragraph.createHyperlinkRun("#" + bookmark.getTarget());
 
                 //尝试获得韩文的标题
-                String text = (String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.韩文标题.name()));
+                String text = dataColumn.getKoreanTitle();
                 //判断韩文的标题是否存在
                 if (Objects.nonNull(text)) {
                     //存在韩文标题，输出韩文标题
@@ -125,7 +126,7 @@ public class SASWord extends BaseWord {
                     xwpfRun.setColor(Util.getColorString(new Color(0, 81, 144)));
                     super.createBookmark(paragraph, bookmark.getReturnMark());
                     //输出中文标题
-                    text = (String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.标题.name()));
+                    text = dataColumn.getTitle();
                     if (text != null) {
                         paragraph = cell.addParagraph();//在单元格中创建段落
                         paragraph.setAlignment(ParagraphAlignment.LEFT);
@@ -143,7 +144,7 @@ public class SASWord extends BaseWord {
                 paragraph = cell.getParagraphArray(0);
                 paragraph.setAlignment(ParagraphAlignment.RIGHT);
                 xwpfRun = paragraph.createRun();
-                text = ((String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.时间.name())));
+                text = dataColumn.getTime();
                 text = Objects.isNull(text) ? "" : text;
                 text = text.replaceAll("/", "-");
                 xwpfRun.setText(text);
@@ -160,10 +161,10 @@ public class SASWord extends BaseWord {
         paragraph.createRun().addBreak(BreakType.PAGE);
         super.createParagraph();
 
-        List<List<Object>> dataList = BaseWord.dataList;
-        Iterator<List<Object>> iterator = dataList.iterator();
+        List<ExcelEntity> dataList = BaseWord.dataList;
+        Iterator<ExcelEntity> iterator = dataList.iterator();
         while (iterator.hasNext()) {
-            List<Object> dataColumn = iterator.next();
+            ExcelEntity dataColumn = iterator.next();
             XWPFTable table = SASWord.super.createTable(5, 2);
 
             //去除边框
@@ -197,11 +198,11 @@ public class SASWord extends BaseWord {
             xwpfRun.setFontFamily("BatangChe");
             xwpfRun.setFontSize(ContentFont.小四.getPoundValue());
             //获得韩文标题
-            String text = (String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.韩文标题.name()));
+            String text = (String) dataColumn.getKoreanTitle();
             if (Objects.nonNull(text)) {
                 xwpfRun.setText(text);
                 //创建超链接
-                Bookmark bookmark = (Bookmark) dataColumn.get(dataColumn.size() - 1);
+                Bookmark bookmark = dataColumn.getBookmark();
                 xwpfRun = paragraph.createHyperlinkRun("#" + bookmark.getReturnMark());
                 xwpfRun.setText("返回首页");
                 xwpfRun.setFontFamily("微软雅黑");
@@ -213,7 +214,7 @@ public class SASWord extends BaseWord {
                 xwpfRun = paragraph.createRun();
                 xwpfRun.setFontFamily("微软雅黑");
                 xwpfRun.setFontSize(11);
-                xwpfRun.setText((String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.标题.name())));
+                xwpfRun.setText(dataColumn.getTitle());
             }
 
             tableRow = table.getRow(1);
@@ -232,12 +233,12 @@ public class SASWord extends BaseWord {
             xwpfRun = paragraph.createRun();
             xwpfRun.setFontFamily("Arial");
             xwpfRun.setFontSize(11);
-            text = dataColumn.get(BaseWord.headerMap.get(ExcelTitles.渠道域名.name())) + " / ";
+            text = dataColumn.getChannelDomainName() + " / ";
             xwpfRun.setText(text);
             xwpfRun = paragraph.createRun();
             xwpfRun.setFontFamily("微软雅黑");
             xwpfRun.setFontSize(11);
-            xwpfRun.setText((String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.渠道.name())));
+            xwpfRun.setText(dataColumn.getChannel());
 
             tableRow = table.getRow(2);
             tableCells = tableRow.getTableCells();
@@ -255,7 +256,7 @@ public class SASWord extends BaseWord {
             xwpfRun = paragraph.createRun();
             xwpfRun.setFontSize(11);
             xwpfRun.setFontFamily("Arial");
-            text = ((String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.时间.name())));
+            text = dataColumn.getTime();
             text = Objects.isNull(text) ? "" : text;
             text = text.replaceAll("/", "-");
             xwpfRun.setText(text);
@@ -279,7 +280,7 @@ public class SASWord extends BaseWord {
             cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             paragraph = cell.getParagraphArray(0);
             paragraph.setAlignment(ParagraphAlignment.BOTH);
-            text = (String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.韩文摘要.name()));
+            text = dataColumn.getKoreanAbstract();
             if (Objects.nonNull(text)) {
                 //设置悬挂缩进1.5字符保持与行首对齐
                 CTPPr ctpPr = Objects.isNull(paragraph.getCTP().getPPr()) ? paragraph.getCTP().addNewPPr() : paragraph.getCTP().getPPr();
@@ -307,7 +308,7 @@ public class SASWord extends BaseWord {
                 //输入中文
                 paragraph = super.createParagraph();
                 xwpfRun = paragraph.createRun();
-                text = (String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.标题.name()));
+                text = dataColumn.getTitle();
                 xwpfRun.setFontSize(11);
                 xwpfRun.setBold(true);
                 xwpfRun.setFontFamily("微软雅黑");
@@ -317,14 +318,14 @@ public class SASWord extends BaseWord {
                 xwpfRun = paragraph.createRun();
                 xwpfRun.setFontFamily("微软雅黑");
                 xwpfRun.setFontSize(11);
-                text = ((String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.时间.name())));
+                text = dataColumn.getTime();
                 text = Objects.isNull(text) ? "" : text;
                 text = text.replaceAll("/", "-") +
-                        "来源于：" + (Objects.isNull(dataColumn.get(BaseWord.headerMap.get(ExcelTitles.渠道.name()))) ?
-                        "" : dataColumn.get(BaseWord.headerMap.get(ExcelTitles.渠道.name())));
+                        "来源于：" + (Objects.isNull(dataColumn.getChannel()) ?
+                        "" : dataColumn.getChannel());
                 xwpfRun.setText(text);
 
-                text = (String) dataColumn.get(BaseWord.headerMap.get(ExcelTitles.全文.name()));
+                text = dataColumn.getFullText();
                 String[] texts = text.split("\n");
                 for (String sentence : texts) {
                     paragraph = super.createParagraph();
@@ -354,7 +355,9 @@ public class SASWord extends BaseWord {
         }
     }
 
-    
+
+    @NotNull
+    @Contract(" -> new")
     public static SASWord init() throws IOException {
         return new SASWord();
     }
