@@ -2,6 +2,8 @@ package com.zhiwei.word.wordversion;
 
 import com.zhiwei.word.BaseWord;
 import com.zhiwei.word.WordTemplateVersion;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -20,6 +22,8 @@ public class SCSImageWord extends BaseWord {
 
     }
 
+    @NotNull
+    @Contract(" -> new")
     public static SCSImageWord init() throws IOException {
         return new SCSImageWord();
     }

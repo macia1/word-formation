@@ -19,7 +19,7 @@ enum: com.zhiwei.word.WordTemplateVersion
 ```xml
 <dependency>
   <groupId>com.zhiwei</groupId>
-  <artifactId>wordFormation</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>word-formation</artifactId>
+  <version>3.0-SNAPSHOT</version>
 </dependency>
 ```

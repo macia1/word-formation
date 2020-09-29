@@ -11,6 +11,7 @@ import lombok.ToString;
  * @date 2020/9/27 13:15
  * @week 星期日
  */
+@SuppressWarnings("unused")
 @EqualsAndHashCode
 @ToString
 @Data

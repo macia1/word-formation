@@ -9,11 +9,14 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBookmark;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -30,9 +33,9 @@ import java.util.Objects;
  * @date 2020/9/17 15:52
  * @week 星期四
  */
-@SuppressWarnings({"SameParameterValue", "DuplicatedCode"})
+@SuppressWarnings({"SameParameterValue", "DuplicatedCode", "unused"})
 public abstract class BaseWord extends XWPFDocument {
-    protected static List<ExcelEntity> dataList = new ArrayList<>();
+    protected List<ExcelEntity> dataList = new ArrayList<>();
     protected OutputStream wordOut;
 
     protected BaseWord(String path) throws IOException {
@@ -53,22 +56,19 @@ public abstract class BaseWord extends XWPFDocument {
             @NotNull List<ExcelEntity> dataList,
             @NotNull OutputStream wordOut
     ) throws IOException {
-        //转换数据存储方式，并生成书签
-        for (int i = 0; i < dataList.size(); i++) {
-            ExcelEntity dataColumn = dataList.get(i);
-            dataColumn.setBookmark(new Bookmark("t" + i, "r" + i));
-            BaseWord.dataList.add(dataColumn);
-        }
         BaseWord baseWord;
         switch (templateVersion) {
             case SAS:
                 baseWord = SASWord.init();
+                baseWord.conversion(dataList);
                 break;
             case SCS:
                 baseWord = SCSWord.init();
+                baseWord.conversion(dataList);
                 break;
             case SCS_IMAGE:
                 baseWord = SCSImageWord.init();
+                baseWord.conversion(dataList);
                 break;
             default:
                 throw new WordTemplateVersionException("不支持的版本：" + templateVersion.toString());
@@ -78,6 +78,51 @@ public abstract class BaseWord extends XWPFDocument {
         baseWord.start();
         //输出word
         baseWord.write(wordOut);
+        baseWord.close();
+    }
+
+    /**
+     * 数据转换
+     *
+     * @param dataList 数据集
+     */
+    private void conversion(@NotNull List<ExcelEntity> dataList) {
+        //转换数据存储方式，并生成书签
+        for (int i = 0; i < dataList.size(); i++) {
+            ExcelEntity dataColumn = dataList.get(i);
+            dataColumn.setBookmark(new Bookmark("t" + i, "r" + i));
+            this.dataList.add(dataColumn);
+        }
+    }
+
+    /**
+     * 将数据转换成word文档
+     *
+     * @param wordTemplateVersion word模板的版本
+     * @param dataList            数据集
+     * @param location            输出地址
+     */
+    public static void start(
+            @NotNull WordTemplateVersion wordTemplateVersion,
+            @NotNull List<ExcelEntity> dataList,
+            @NotNull String location
+    ) throws IOException {
+        start(wordTemplateVersion, dataList, new FileOutputStream(location));
+    }
+
+    /**
+     * 将数据转换成word文档
+     *
+     * @param wordTemplateVersion word模板的版本
+     * @param dataList            数据集
+     * @param outFile             输出文件
+     */
+    public static void start(
+            @NotNull WordTemplateVersion wordTemplateVersion,
+            @NotNull List<ExcelEntity> dataList,
+            @NotNull File outFile
+    ) throws IOException {
+        start(wordTemplateVersion, dataList, new FileOutputStream(outFile));
     }
 
     /**
@@ -93,8 +138,8 @@ public abstract class BaseWord extends XWPFDocument {
     @NotNull
     protected final Map<String, List<ExcelEntity>> classification(Language language) {
         //进行数据筛选
-        Map<String, List<ExcelEntity>> classificationMap = new LinkedHashMap<>(BaseWord.dataList.size() / 2);
-        for (ExcelEntity data : BaseWord.dataList) {
+        Map<String, List<ExcelEntity>> classificationMap = new LinkedHashMap<>(this.dataList.size() / 2);
+        for (ExcelEntity data : this.dataList) {
             String classification = null;
             switch (language) {
                 case chinese:
@@ -171,6 +216,7 @@ public abstract class BaseWord extends XWPFDocument {
          */
         private String returnMark;
 
+        @Contract(pure = true)
         public Bookmark(String target, String returnMark) {
             this.target = target;
             this.returnMark = returnMark;

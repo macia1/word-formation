@@ -126,7 +126,7 @@ public class SCSWord extends BaseWord {
             super.createParagraph();
         });
         //目录表格写入完毕，写入全部数据
-        BaseWord.dataList.forEach(dataColumn -> {
+        this.dataList.forEach(dataColumn -> {
             Bookmark bookmark = dataColumn.getBookmark();
             XWPFParagraph paragraph = super.createParagraph();
             paragraph.createRun().addBreak(BreakType.PAGE);
@@ -311,6 +311,7 @@ public class SCSWord extends BaseWord {
                 //设置Headline列
                 index++;
                 String cellContent = dataColumn.getKoreanTitle();//韩文标题
+                cellContent = Objects.nonNull(cellContent) ? cellContent : "null";
                 tableCell = tableCells.get(index);
                 paragraph = tableCell.getParagraphArray(0);
                 Bookmark bookmark = dataColumn.getBookmark();//获得书签信息
@@ -352,7 +353,6 @@ public class SCSWord extends BaseWord {
                 xwpfRun.setFontSize(ContentFont.小五.getPoundValue());
             } catch (Exception e) {
                 e.printStackTrace();
-                System.exit(500);
             }
         }
     }

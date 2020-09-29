@@ -49,7 +49,7 @@ public class SASWord extends BaseWord {
     @Override
     public void start() {
         //删除无韩文翻译的文本
-        BaseWord.dataList.removeIf(dataColumn ->
+        super.dataList.removeIf(dataColumn ->
                 Objects.isNull(dataColumn.getKoreanTitle()));
         //创建开头三个空白段落
         for (int i = 0; i < 2; i++) {
@@ -152,6 +152,10 @@ public class SASWord extends BaseWord {
                 xwpfRun.setFontSize(ContentFont.小四.getPoundValue());
                 xwpfRun.setColor(Util.getColorString(new Color(0, 81, 144)));
             }
+
+            //表格间的空行
+            super.createParagraph();
+            super.createParagraph();
         }
 
         //创建空白段落
@@ -161,7 +165,7 @@ public class SASWord extends BaseWord {
         paragraph.createRun().addBreak(BreakType.PAGE);
         super.createParagraph();
 
-        List<ExcelEntity> dataList = BaseWord.dataList;
+        List<ExcelEntity> dataList = super.dataList;
         Iterator<ExcelEntity> iterator = dataList.iterator();
         while (iterator.hasNext()) {
             ExcelEntity dataColumn = iterator.next();
