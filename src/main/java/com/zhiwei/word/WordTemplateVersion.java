@@ -30,7 +30,7 @@ public enum WordTemplateVersion {
      */
     SCS_IMAGE("SCS-image-template.docx");
 
-    private String templateFile;
+    private final String templateFile;
 
     WordTemplateVersion(String templatePath) {
         this.templateFile = templatePath;

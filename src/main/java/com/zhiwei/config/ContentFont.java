@@ -11,7 +11,8 @@ import lombok.ToString;
  * @week 星期五
  */
 @Getter
-@ToString(callSuper = true)
+@ToString
+@SuppressWarnings({"NonAsciiCharacters"})
 public enum ContentFont {
     初号(42),
     小初(36),
@@ -35,7 +36,7 @@ public enum ContentFont {
     /**
      * 磅值
      */
-    private int poundValue;
+    private final int poundValue;
 
     ContentFont(int poundValue) {
         this.poundValue = poundValue;
