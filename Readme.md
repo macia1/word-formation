@@ -20,6 +20,6 @@ enum: com.zhiwei.word.WordTemplateVersion
 <dependency>
   <groupId>com.zhiwei</groupId>
   <artifactId>word-formation</artifactId>
-  <version>3.0-SNAPSHOT</version>
+  <version>4.0-SNAPSHOT</version>
 </dependency>
 ```
