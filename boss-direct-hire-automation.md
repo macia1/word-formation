@@ -30,9 +30,9 @@ Boss直聘部分
 
 ```xml
 <dependency>
-    <groupId>com.zhiwei.automation</groupId>
-    <artifactId>boss-direct-hire-automation</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.zhiwei</groupId>
+    <artifactId>word-formation</artifactId>
+    <version>4.0-SNAPSHOT</version>
 </dependency>
 ```
 
