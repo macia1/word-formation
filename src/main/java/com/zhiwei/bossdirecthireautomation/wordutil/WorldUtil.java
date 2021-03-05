@@ -79,6 +79,7 @@ public class WorldUtil extends XWPFDocument {
         final PolyTreeNode bossBrandNode = labelNode.getChildNode("Boss直聘");
         // 获得正面情感节点
         final PolyTreeNode positiveNode = bossBrandNode.getChildNode("正面");
+        if (Objects.isNull(positiveNode)) return;
         final XWPFParagraph mainParagraph = super.createParagraph();
         this.writeTopTitle("Boss直聘正面事件", mainParagraph);// 生成标题
 
@@ -109,6 +110,7 @@ public class WorldUtil extends XWPFDocument {
      * 行业部分
      */
     private void industry(PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 行业部分按照事件传播量排序
         final List<PolyTreeNode> events = new ArrayList<>();
         labelNode.getNodes().forEach(brand -> brand.getNodes().forEach(emotion -> events.addAll(emotion.getNodes())));
@@ -163,6 +165,7 @@ public class WorldUtil extends XWPFDocument {
      * 竞品
      */
     private void otherBrand(String emotion, PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 输出其他品牌的正面情感消息
         // 除Boss直聘以外的其他品牌
         final List<PolyTreeNode> brands = labelNode.getNodes();
