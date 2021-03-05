@@ -21,9 +21,9 @@ class BossDirectHireAutomationTest {
     @Test
     public void demo01() throws BossDirectHireAutomationException, IOException {
         // 直接传入数据源文件和渠道文件，
-        BossDirectHireAutomation bossDirectHireAutomation = BossDirectHireAutomation.build("boss-direct-hire-automation/BOSS直聘周报测试.xlsx", "boss-direct-hire-automation/渠道生成.xlsx");
+        BossDirectHireAutomation bossDirectHireAutomation = BossDirectHireAutomation.build("source/work/BOSS直聘周报.xlsx", "source/work/渠道匹配.xlsx");
         // 生成world并输出到指定路径
-        bossDirectHireAutomation.generateWord("boss-direct-hire-automation/boss-direct-hire-automation.docx");
+        bossDirectHireAutomation.generateWord("source/work/boss-direct-hire-automation.docx");
     }
 
     /**

@@ -109,7 +109,7 @@ public class BossDirectHireAutomation {
      */
     public static BossDirectHireAutomation build(String sourcePath, String channelPath) throws BossDirectHireAutomationException {
         // 读取sheet 1
-        List<EventExcelEntity> brandData = EasyExcel.read(sourcePath, EventExcelEntity.class, new SyncReadListener()).sheet("总表").doReadSync();
+        List<EventExcelEntity> brandData = EasyExcel.read(sourcePath, EventExcelEntity.class, new SyncReadListener()).sheet(0).doReadSync();
 
         // 判断是否需要读取渠道影响力文件
         if (StringUtils.isNoneBlank(channelPath)) {
