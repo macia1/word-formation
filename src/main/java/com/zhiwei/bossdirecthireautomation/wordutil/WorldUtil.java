@@ -437,12 +437,12 @@ public class WorldUtil extends XWPFDocument {
          */
         // 判断来源
         for (EventExcelEntity datum : data) {
-            if ("网媒".equals(datum.getSource())) {
+            if (datum.getSource().contains("网媒")) {
                 return datum;
             }
         }
         for (EventExcelEntity datum : data) {
-            if ("微信".equals(datum.getSource())) return datum;
+            if (datum.getSource().contains("微信")) return datum;
         }
         // 根据影响力进行排名
         for (int i = 0; i < data.size(); i++) {
