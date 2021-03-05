@@ -23,12 +23,6 @@ public class BaseConfig {
      * Boss直聘特殊情感
      */
     public static final String BOSS_EXCEPTION_EMOTION = "负面+敏感";
-    /**
-     * 特权媒体
-     */
-    public static final List<String> priorities = Collections.unmodifiableList(
-            Arrays.asList("微信", "网媒")
-    );
 
     /**
      * 品牌顺序

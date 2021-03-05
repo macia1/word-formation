@@ -8,6 +8,7 @@ import com.zhiwei.bossdirecthireautomation.exceptions.DataSourceAbnormalExceptio
 import com.zhiwei.bossdirecthireautomation.tree.EventExcelEntity;
 import com.zhiwei.bossdirecthireautomation.tree.PolyTreeUtil;
 import com.zhiwei.bossdirecthireautomation.wordutil.WorldUtil;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +27,7 @@ public class BossDirectHireAutomation {
     /**
      * 品牌数据源
      */
+    @Getter
     private final List<EventExcelEntity> brandData;
 
     private BossDirectHireAutomation(List<EventExcelEntity> brandData) {
@@ -129,6 +131,7 @@ public class BossDirectHireAutomation {
     public static BossDirectHireAutomation build(List<EventExcelEntity> brandData) throws BossDirectHireAutomationException {
         try {
             BossDirectHireAutomation.checkData(brandData);
+
             return new BossDirectHireAutomation(brandData);
         } catch (BossDirectHireAutomationException e) {
             throw e;

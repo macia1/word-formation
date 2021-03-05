@@ -313,7 +313,7 @@ public class WorldUtil extends XWPFDocument {
      *
      * @param manuscript 稿件节点
      */
-    private List<EventExcelEntity> chooseChannel(PolyTreeNode manuscript) {
+    List<EventExcelEntity> chooseChannel(PolyTreeNode manuscript) {
         /*
         选举需要被列举的渠道
          原发1个，权重列3个，高频列3个
@@ -323,15 +323,6 @@ public class WorldUtil extends XWPFDocument {
         manuscript.getNodes().forEach(node -> dataNodeList.add((EventExcelEntity) node));
 
         dataNodeList.sort(Collections.reverseOrder(Comparator.comparingDouble(EventExcelEntity::getInfluence)));// 按照影响力降序
-        // 上升特殊平台的位置
-        int cursor = 0;
-        for (String priority : BaseConfig.priorities) {
-            for (int i = cursor; i < dataNodeList.size(); i++) {
-                if (priority.equalsIgnoreCase(dataNodeList.get(i).getPlatform())) {
-                    dataNodeList.add(cursor++, dataNodeList.remove(i));
-                }
-            }
-        }
 
         DataNodeList results = new DataNodeList(); // 结果集
         // 获得原发
@@ -444,11 +435,14 @@ public class WorldUtil extends XWPFDocument {
          2.根据影响力进行排名
          3.根据影响力排名结果，选择影响力最大的一条
          */
-        // 寻找网媒、微信
-        for (String priority : BaseConfig.priorities) {
-            for (EventExcelEntity datum : data) {
-                if (priority.equalsIgnoreCase(datum.getPlatform())) return datum;
+        // 判断来源
+        for (EventExcelEntity datum : data) {
+            if ("网媒".equals(datum.getSource())) {
+                return datum;
             }
+        }
+        for (EventExcelEntity datum : data) {
+            if ("微信".equals(datum.getSource())) return datum;
         }
         // 根据影响力进行排名
         for (int i = 0; i < data.size(); i++) {
@@ -496,7 +490,7 @@ public class WorldUtil extends XWPFDocument {
     /**
      * 获得颜色的十六进制
      */
-    @SuppressWarnings("SameParameterValue")
+    @SuppressWarnings({"SameParameterValue", "DuplicatedCode"})
     private String getColorString(int red, int green, int blue) {
         int[] numbers = {red, green, blue};
         StringBuilder builder = new StringBuilder();
