@@ -32,6 +32,6 @@ class WorldUtilTest {
         PolyTreeNode emotionNode = brandNode.getChildNode("正面");
         PolyTreeNode eventNode = emotionNode.getChildNode("BOSS直聘《2021年春节复工首周就业趋势观察》");
         PolyTreeNode manuscript = eventNode.getChildNode("节后市场平均薪资超8K，用人需求同比翻倍丨2021年春节复工首周就业趋势观察");
-        this.worldUtil.chooseChannel(manuscript).forEach(System.out::println);
+        this.worldUtil.chooseChannel(manuscript, null).forEach(System.out::println);
     }
 }

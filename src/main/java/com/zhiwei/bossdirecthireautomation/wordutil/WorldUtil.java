@@ -300,12 +300,10 @@ public class WorldUtil extends XWPFDocument {
             title = "(传播量：" + manuscript.getDataNodeSize() + ")";
             this.writeDefaultString(title, paragraph).addCarriageReturn();// 输出并换行
             // 原发、权重媒体
-            List<EventExcelEntity> channels = this.chooseChannel(manuscript);
+            List<EventExcelEntity> channels = this.chooseChannel(manuscript, aData);
 
             StringBuilder builder = new StringBuilder("高频/重点参与渠道：");
-            builder.append(aData.getChannel());
             if (!channels.isEmpty()) {
-                builder.append("、");
                 Iterator<EventExcelEntity> iterator = channels.iterator();
                 int size = 0;
                 while (iterator.hasNext()) {
@@ -327,7 +325,7 @@ public class WorldUtil extends XWPFDocument {
      *
      * @param manuscript 稿件节点
      */
-    List<EventExcelEntity> chooseChannel(PolyTreeNode manuscript) {
+    List<EventExcelEntity> chooseChannel(PolyTreeNode manuscript, EventExcelEntity primary) {
         /*
         选举需要被列举的渠道
          */
@@ -338,6 +336,18 @@ public class WorldUtil extends XWPFDocument {
         dataNodeList.sort(Collections.reverseOrder(Comparator.comparingDouble(EventExcelEntity::getInfluence)));// 按照影响力降序
 
         DataNodeList results = new DataNodeList(); // 结果集
+
+        if (Objects.nonNull(primary)) {
+            results.add(primary);
+            dataNodeList.removeIf(eventExcelEntity -> eventExcelEntity.getChannel().equalsIgnoreCase(primary.getChannel()));
+        } else {
+            for (int i = 0; i < dataNodeList.size(); i++) {
+                if ("原发".equals(dataNodeList.get(i).getWhether())) {
+                    results.add(dataNodeList.remove(i));
+                }
+            }
+        }
+
         // 获得三个权重（影响力最高的三个渠道）
         List<EventExcelEntity> subList = dataNodeList.subList(0, Math.min(dataNodeList.size(), 3));
         results.addAll(subList);
