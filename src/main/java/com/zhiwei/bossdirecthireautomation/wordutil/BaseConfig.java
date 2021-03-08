@@ -23,7 +23,12 @@ public class BaseConfig {
      * Boss直聘特殊情感
      */
     public static final String BOSS_EXCEPTION_EMOTION = "负面+敏感";
-
+    /**
+     * 特殊来源
+     */
+    public static final String[] SPECIAL_SOURCE = {
+            "网媒", "微信"
+    };
     /**
      * 品牌顺序
      */

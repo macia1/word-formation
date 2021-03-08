@@ -7,6 +7,7 @@ package com.zhiwei.config;
  * @date 2020/9/25 10:05
  * @week 星期五
  */
+@SuppressWarnings({"unused", "NonAsciiCharacters"})
 public enum ExcelTitles {
     序号,
     标题,
