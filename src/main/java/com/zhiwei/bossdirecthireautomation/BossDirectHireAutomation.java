@@ -46,6 +46,7 @@ public class BossDirectHireAutomation {
         ClassUtil<EventExcelEntity> classUtil = new ClassUtil<>(EventExcelEntity.class);
         Map<Field, Method> fieldMethodMap = classUtil.getGetMethod();
         Set<Map.Entry<Field, Method>> entries = fieldMethodMap.entrySet();
+        List<String> errorColumn = new ArrayList<>();
         for (EventExcelEntity eventExcelEntity : eventExcelEntities) {
             for (Map.Entry<Field, Method> entry : entries) {
                 Method method = entry.getValue();
@@ -55,16 +56,20 @@ public class BossDirectHireAutomation {
                     if (field.isAnnotationPresent(NotNull.class) && field.isAnnotationPresent(ExcelProperty.class)) {
                         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                         String[] value = excelProperty.value();
-                        StringBuilder builder = new StringBuilder();
-                        for (int i = 0; i < value.length; i++) {
-                            builder.append("“").append(value[i]).append("‘");
-                            if (i < value.length - 1) builder.append("或");
-                        }
-                        builder.append("不能为空, 请检查数据是否存在问题");
-                        throw new DataSourceAbnormalException(builder.toString());
+                        Collections.addAll(errorColumn, value);
                     }
                 }
             }
+        }
+        if (!errorColumn.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            Iterator<String> iterator = errorColumn.iterator();
+            while (iterator.hasNext()) {
+                builder.append("“").append(iterator.next()).append("”");
+                if (iterator.hasNext()) builder.append(",");
+            }
+            builder.append("不能为空");
+            throw new DataSourceAbnormalException(builder.toString());
         }
         log.info("数据源检查完毕，无异常数据");
     }

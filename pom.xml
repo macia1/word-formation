@@ -123,8 +123,9 @@
             </plugin>
             <!-- 要将源码放上去，需要加入这个插件 -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.2.0</version>
                 <configuration>
                     <attach>true</attach>
                 </configuration>

@@ -1,4 +1,7 @@
 .idea
 target
 *.iml
-source
+testWrite
+test.*
+*.xlsx
+*.docx

@@ -75,6 +75,7 @@ public class WorldUtil extends XWPFDocument {
      * Boss直聘正面事件
      */
     private void bossPositive(PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 获取Boss直聘节点
         final PolyTreeNode bossBrandNode = labelNode.getChildNode("Boss直聘");
         // 获得正面情感节点
@@ -92,6 +93,7 @@ public class WorldUtil extends XWPFDocument {
      * Boss直聘负面+敏感
      */
     private void bossNegative(PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 获得Boss直聘节点
         final PolyTreeNode bossBrand = labelNode.getChildNode("Boss直聘");
         // 负面情感节点
@@ -278,9 +280,6 @@ public class WorldUtil extends XWPFDocument {
         List<PolyTreeNode> manuscripts = this.selectManuscript(eventNode);// 选择需要输出到world的稿件
         int index = 1;
         for (PolyTreeNode manuscript : manuscripts) {
-            if (manuscript.getNodeName().equals("春华资本联合管理层战略投资智联招聘 深耕中国人力资源服务市场")) {
-                new Object();
-            }
             /*
              1.输出稿件标题
              2.输出重点媒体
