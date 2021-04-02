@@ -19,6 +19,7 @@ import java.util.Objects;
  * @author aszswaz
  * @date 2021/4/2 11:22:19
  */
+@SuppressWarnings("unused")
 @Log4j2
 public class WordOutPut {
     private final XWPFDocument doc = new XWPFDocument();
