@@ -19,6 +19,7 @@ import java.util.Objects;
  * @author aszswaz
  * @date 2021/4/2 11:20:41
  */
+@SuppressWarnings("unused")
 @Log4j2
 public class HuaWeiWordOutPut {
     private Map<String, Integer> titleMap;
