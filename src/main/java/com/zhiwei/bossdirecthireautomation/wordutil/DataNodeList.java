@@ -20,10 +20,6 @@ public class DataNodeList extends ArrayList<EventExcelEntity> {
         // 取出完全相同的对象
         if (super.contains(eventExcelEntity)) return false;
 
-        if (eventExcelEntity.getPlatform().equals("微信")) {
-            new Object();
-        }
-
         for (int i = 0; i < super.size(); i++) {
             if (super.get(i).getChannel().equals(eventExcelEntity.getChannel())) {
                 EventExcelEntity result = this.comparison(eventExcelEntity, super.get(i));
@@ -42,10 +38,6 @@ public class DataNodeList extends ArrayList<EventExcelEntity> {
     private EventExcelEntity comparison(EventExcelEntity o1, EventExcelEntity o2) {
         // 判断是否原发
         if ("原发".equals(o1.getWhether()) && !"原发".equals(o2.getWhether())) return o1;
-        // 判断是否特殊平台
-        if (BaseConfig.priorities.contains(o1.getPlatform()) && !BaseConfig.priorities.contains(o2.getPlatform())) {
-            return o1;
-        }
         // 比较影响力
         return o1.getInfluence() > o2.getInfluence() ? o1 : o2;
     }

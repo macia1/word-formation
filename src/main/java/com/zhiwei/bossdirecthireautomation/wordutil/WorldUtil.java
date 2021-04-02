@@ -75,10 +75,12 @@ public class WorldUtil extends XWPFDocument {
      * Boss直聘正面事件
      */
     private void bossPositive(PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 获取Boss直聘节点
         final PolyTreeNode bossBrandNode = labelNode.getChildNode("Boss直聘");
         // 获得正面情感节点
         final PolyTreeNode positiveNode = bossBrandNode.getChildNode("正面");
+        if (Objects.isNull(positiveNode)) return;
         final XWPFParagraph mainParagraph = super.createParagraph();
         this.writeTopTitle("Boss直聘正面事件", mainParagraph);// 生成标题
 
@@ -91,6 +93,7 @@ public class WorldUtil extends XWPFDocument {
      * Boss直聘负面+敏感
      */
     private void bossNegative(PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 获得Boss直聘节点
         final PolyTreeNode bossBrand = labelNode.getChildNode("Boss直聘");
         // 负面情感节点
@@ -109,6 +112,7 @@ public class WorldUtil extends XWPFDocument {
      * 行业部分
      */
     private void industry(PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 行业部分按照事件传播量排序
         final List<PolyTreeNode> events = new ArrayList<>();
         labelNode.getNodes().forEach(brand -> brand.getNodes().forEach(emotion -> events.addAll(emotion.getNodes())));
@@ -128,26 +132,33 @@ public class WorldUtil extends XWPFDocument {
             run.setFontFamily(BaseConfig.DEFAULT_FONT);
             run.setFontSize(BaseConfig.DEFAULT_FONT_SIZE);
             run.setBold(true);
-            List<EventExcelEntity> selects = new ArrayList<>();// 候选
+            List<EventExcelEntity> selects = new ArrayList<>(1000);// 候选
+            // 所有稿件的候选列表
             for (PolyTreeNode node : event.getNodes()) {
-                List<EventExcelEntity> conversions = new ArrayList<>(node.getNodes().size());
-                node.getNodes().forEach(conversion -> conversions.add((EventExcelEntity) conversion));// 转换类型
-
-                selects.add(this.selectByInfluence(conversions));// 选出稿件的第一权重，加入时间候选列表
+                node.getNodes().forEach(conversion -> {
+                    EventExcelEntity o = (EventExcelEntity) conversion;
+                    for (int i = 0; i < selects.size(); i++) {
+                        EventExcelEntity select = selects.get(i);
+                        if (o.getChannel().equalsIgnoreCase(select.getChannel())) {
+                            if (o.getInfluence() > select.getInfluence()) {
+                                selects.set(i, o);
+                            }
+                            return;
+                        }
+                    }
+                    selects.add(o);
+                });// 转换类型
             }
             // 从候选列表获得权重最高的
             EventExcelEntity eventExcelEntity = this.selectByInfluence(selects);
             // 输出
-            this.createLink(event.getNodeName(), eventExcelEntity.getUrl(), paragraph);
+            this.createLink(eventExcelEntity.getTitle(), eventExcelEntity.getUrl(), paragraph);
             run = this.writeDefaultString("（传播量：" + event.getDataNodeSize() + "）", paragraph);// 输出传播量
             run.setBold(true);
             run.addCarriageReturn();
 
-            // 聚合事件下的所有数据
-            final PolyTreeNode countNode = new PolyTreeNode();
-            event.getNodes().forEach(manuscript -> manuscript.getNodes().forEach(countNode::add));
             // 从数据中选择n个渠道
-            List<EventExcelEntity> channels = this.chooseChannel(countNode);
+            List<EventExcelEntity> channels = selects.subList(0, Math.min(selects.size(), 6));
             Iterator<EventExcelEntity> iterator = channels.iterator();
             StringBuilder builder = new StringBuilder("高频/重点参与渠道：");
             while (iterator.hasNext()) {
@@ -163,6 +174,7 @@ public class WorldUtil extends XWPFDocument {
      * 竞品
      */
     private void otherBrand(String emotion, PolyTreeNode labelNode) {
+        if (Objects.isNull(labelNode)) return;
         // 输出其他品牌的正面情感消息
         // 除Boss直聘以外的其他品牌
         final List<PolyTreeNode> brands = labelNode.getNodes();
@@ -268,9 +280,6 @@ public class WorldUtil extends XWPFDocument {
         List<PolyTreeNode> manuscripts = this.selectManuscript(eventNode);// 选择需要输出到world的稿件
         int index = 1;
         for (PolyTreeNode manuscript : manuscripts) {
-            if (manuscript.getNodeName().equals("春华资本联合管理层战略投资智联招聘 深耕中国人力资源服务市场")) {
-                new Object();
-            }
             /*
              1.输出稿件标题
              2.输出重点媒体
@@ -290,17 +299,19 @@ public class WorldUtil extends XWPFDocument {
             title = "(传播量：" + manuscript.getDataNodeSize() + ")";
             this.writeDefaultString(title, paragraph).addCarriageReturn();// 输出并换行
             // 原发、权重媒体
-            List<EventExcelEntity> channels = this.chooseChannel(manuscript);
+            List<EventExcelEntity> channels = this.chooseChannel(manuscript, aData);
 
             StringBuilder builder = new StringBuilder("高频/重点参与渠道：");
-            Iterator<EventExcelEntity> iterator = channels.iterator();
-            int size = 0;
-            while (iterator.hasNext()) {
-                builder.append(iterator.next().getChannel());
-                if (iterator.hasNext() && ++size < 5) {
-                    builder.append("、");
-                } else {
-                    break;
+            if (!channels.isEmpty()) {
+                Iterator<EventExcelEntity> iterator = channels.iterator();
+                int size = 0;
+                while (iterator.hasNext()) {
+                    builder.append(iterator.next().getChannel());
+                    if (iterator.hasNext() && ++size < 5) {
+                        builder.append("、");
+                    } else {
+                        break;
+                    }
                 }
             }
             if (manuscript.getDataNodeSize() > channels.size()) builder.append("等");
@@ -313,34 +324,29 @@ public class WorldUtil extends XWPFDocument {
      *
      * @param manuscript 稿件节点
      */
-    private List<EventExcelEntity> chooseChannel(PolyTreeNode manuscript) {
+    List<EventExcelEntity> chooseChannel(PolyTreeNode manuscript, EventExcelEntity primary) {
         /*
         选举需要被列举的渠道
-         原发1个，权重列3个，高频列3个
          */
         DataNodeList dataNodeList = new DataNodeList();
 
         manuscript.getNodes().forEach(node -> dataNodeList.add((EventExcelEntity) node));
 
         dataNodeList.sort(Collections.reverseOrder(Comparator.comparingDouble(EventExcelEntity::getInfluence)));// 按照影响力降序
-        // 上升特殊平台的位置
-        int cursor = 0;
-        for (String priority : BaseConfig.priorities) {
-            for (int i = cursor; i < dataNodeList.size(); i++) {
-                if (priority.equalsIgnoreCase(dataNodeList.get(i).getPlatform())) {
-                    dataNodeList.add(cursor++, dataNodeList.remove(i));
+
+        DataNodeList results = new DataNodeList(); // 结果集
+
+        if (Objects.nonNull(primary)) {
+            results.add(primary);
+            dataNodeList.removeIf(eventExcelEntity -> eventExcelEntity.getChannel().equalsIgnoreCase(primary.getChannel()));
+        } else {
+            for (int i = 0; i < dataNodeList.size(); i++) {
+                if ("原发".equals(dataNodeList.get(i).getWhether())) {
+                    results.add(dataNodeList.remove(i));
                 }
             }
         }
 
-        DataNodeList results = new DataNodeList(); // 结果集
-        // 获得原发
-        for (int i = 0; i < dataNodeList.size(); i++) {
-            if ("原发".equals(dataNodeList.get(i).getWhether())) {
-                results.add(dataNodeList.remove(i));
-                break;
-            }
-        }
         // 获得三个权重（影响力最高的三个渠道）
         List<EventExcelEntity> subList = dataNodeList.subList(0, Math.min(dataNodeList.size(), 3));
         results.addAll(subList);
@@ -438,27 +444,10 @@ public class WorldUtil extends XWPFDocument {
      * 根据影响力选择数据
      */
     private EventExcelEntity selectByInfluence(List<EventExcelEntity> data) {
-        /*
-        根据影响力选择数据
-         1.以网媒、微信优先
-         2.根据影响力进行排名
-         3.根据影响力排名结果，选择影响力最大的一条
-         */
-        // 寻找网媒、微信
-        for (String priority : BaseConfig.priorities) {
+        data.sort(Collections.reverseOrder(Comparator.comparingDouble(EventExcelEntity::getInfluence)));
+        for (String source : BaseConfig.SPECIAL_SOURCE) {
             for (EventExcelEntity datum : data) {
-                if (priority.equalsIgnoreCase(datum.getPlatform())) return datum;
-            }
-        }
-        // 根据影响力进行排名
-        for (int i = 0; i < data.size(); i++) {
-            double currentInfluence = data.get(i).getInfluence();
-            for (int i1 = 0; i1 < data.size(); i1++) {
-                EventExcelEntity aData = data.get(i1);
-                double aInfluence = aData.getInfluence();
-                if (aInfluence > currentInfluence) {// 降序排序
-                    data.set(i1, data.set(i, aData));// 交换位置
-                }
+                if (datum.getSource().contains(source)) return datum;
             }
         }
         return data.get(0);
@@ -496,7 +485,7 @@ public class WorldUtil extends XWPFDocument {
     /**
      * 获得颜色的十六进制
      */
-    @SuppressWarnings("SameParameterValue")
+    @SuppressWarnings({"SameParameterValue", "DuplicatedCode"})
     private String getColorString(int red, int green, int blue) {
         int[] numbers = {red, green, blue};
         StringBuilder builder = new StringBuilder();

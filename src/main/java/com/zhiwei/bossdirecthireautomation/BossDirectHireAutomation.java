@@ -8,6 +8,7 @@ import com.zhiwei.bossdirecthireautomation.exceptions.DataSourceAbnormalExceptio
 import com.zhiwei.bossdirecthireautomation.tree.EventExcelEntity;
 import com.zhiwei.bossdirecthireautomation.tree.PolyTreeUtil;
 import com.zhiwei.bossdirecthireautomation.wordutil.WorldUtil;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +27,7 @@ public class BossDirectHireAutomation {
     /**
      * 品牌数据源
      */
+    @Getter
     private final List<EventExcelEntity> brandData;
 
     private BossDirectHireAutomation(List<EventExcelEntity> brandData) {
@@ -44,6 +46,7 @@ public class BossDirectHireAutomation {
         ClassUtil<EventExcelEntity> classUtil = new ClassUtil<>(EventExcelEntity.class);
         Map<Field, Method> fieldMethodMap = classUtil.getGetMethod();
         Set<Map.Entry<Field, Method>> entries = fieldMethodMap.entrySet();
+        List<String> errorColumn = new ArrayList<>();
         for (EventExcelEntity eventExcelEntity : eventExcelEntities) {
             for (Map.Entry<Field, Method> entry : entries) {
                 Method method = entry.getValue();
@@ -53,16 +56,20 @@ public class BossDirectHireAutomation {
                     if (field.isAnnotationPresent(NotNull.class) && field.isAnnotationPresent(ExcelProperty.class)) {
                         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                         String[] value = excelProperty.value();
-                        StringBuilder builder = new StringBuilder();
-                        for (int i = 0; i < value.length; i++) {
-                            builder.append("“").append(value[i]).append("‘");
-                            if (i < value.length - 1) builder.append("或");
-                        }
-                        builder.append("不能为空, 请检查数据是否存在问题");
-                        throw new DataSourceAbnormalException(builder.toString());
+                        Collections.addAll(errorColumn, value);
                     }
                 }
             }
+        }
+        if (!errorColumn.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            Iterator<String> iterator = errorColumn.iterator();
+            while (iterator.hasNext()) {
+                builder.append("“").append(iterator.next()).append("”");
+                if (iterator.hasNext()) builder.append(",");
+            }
+            builder.append("不能为空");
+            throw new DataSourceAbnormalException(builder.toString());
         }
         log.info("数据源检查完毕，无异常数据");
     }
@@ -109,7 +116,7 @@ public class BossDirectHireAutomation {
      */
     public static BossDirectHireAutomation build(String sourcePath, String channelPath) throws BossDirectHireAutomationException {
         // 读取sheet 1
-        List<EventExcelEntity> brandData = EasyExcel.read(sourcePath, EventExcelEntity.class, new SyncReadListener()).sheet("总表").doReadSync();
+        List<EventExcelEntity> brandData = EasyExcel.read(sourcePath, EventExcelEntity.class, new SyncReadListener()).sheet(0).doReadSync();
 
         // 判断是否需要读取渠道影响力文件
         if (StringUtils.isNoneBlank(channelPath)) {
@@ -129,6 +136,7 @@ public class BossDirectHireAutomation {
     public static BossDirectHireAutomation build(List<EventExcelEntity> brandData) throws BossDirectHireAutomationException {
         try {
             BossDirectHireAutomation.checkData(brandData);
+
             return new BossDirectHireAutomation(brandData);
         } catch (BossDirectHireAutomationException e) {
             throw e;
