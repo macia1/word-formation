@@ -217,8 +217,8 @@ public class RecruitmentSummary {
 
     private XWPFRun getRun(XWPFParagraph paragraph) {
         XWPFRun xwpfRun = paragraph.createRun();
-        xwpfRun.setFontFamily(Config.FONT.getFamily());
-        xwpfRun.setFontSize(Config.FONT.getSize());
+        xwpfRun.setFontFamily("微软雅黑");
+        xwpfRun.setFontSize(10);
         return xwpfRun;
     }
 

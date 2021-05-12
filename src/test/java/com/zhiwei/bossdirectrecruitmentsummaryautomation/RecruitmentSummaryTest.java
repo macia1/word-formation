@@ -16,7 +16,7 @@ class RecruitmentSummaryTest {
 
     @Test
     void start() throws IOException {
-        String out = "target/RecruitmentSummaryTest.docx";
+        String out = "source/Boss直聘汇总输出格式自动化/" + RecruitmentSummaryTest.class.getSimpleName() + ".docx";
         String source = "source/Boss直聘汇总输出格式自动化/Boss直聘负面舆情汇总（0506-0507）.xlsx";
         try {
             RecruitmentSummary summary = new RecruitmentSummary(
