@@ -1,5 +1,6 @@
 package com.zhiwei.bossdirectrecruitmentsummaryautomation;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,11 +17,13 @@ public class PolytreeNode {
     /**
      * 节点名称
      */
+    @ExcelIgnore
     private final String nodeName;
 
     /**
      * 子节点
      */
+    @ExcelIgnore
     private final List<PolytreeNode> polytreeNodes = new ArrayList<>();
 
     public PolytreeNode(String nodeName) {

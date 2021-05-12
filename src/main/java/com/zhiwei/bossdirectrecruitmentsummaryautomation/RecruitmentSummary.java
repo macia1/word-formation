@@ -159,7 +159,9 @@ public class RecruitmentSummary {
         XWPFRun xwpfRun;
         // 媒体名称
         final List<PolytreeNode> mediaTypeNodes = mediaTageNode.getPolytreeNodes();
-        for (PolytreeNode mediaTypeNode : mediaTypeNodes) {
+        final Iterator<PolytreeNode> iterator = mediaTypeNodes.iterator();
+        while (iterator.hasNext()) {
+            PolytreeNode mediaTypeNode = iterator.next();
             xwpfRun = this.getRun(this.getParagraph());
             xwpfRun.setText("媒体名称： " + mediaTypeNode.getNodeName());
 
@@ -167,6 +169,10 @@ public class RecruitmentSummary {
             xwpfRun.setText("相关内容链接如下：");
 
             this.sourceNode(mediaTypeNode);
+
+            if (iterator.hasNext()) {
+                this.getParagraph();
+            }
         }
     }
 
