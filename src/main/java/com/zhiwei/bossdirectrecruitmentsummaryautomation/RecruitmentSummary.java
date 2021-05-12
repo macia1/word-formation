@@ -102,8 +102,35 @@ public class RecruitmentSummary {
         }
 
         final PolytreeNode rootNode = this.polytree.getRoot();
+        this.summary(rootNode);
+        this.getParagraph();
         this.mediaTage(rootNode);
         this.document.write(new FileOutputStream(this.outputFile));
+    }
+
+    /**
+     * 内容摘要部分
+     */
+    private void summary(PolytreeNode rootNode) {
+        final List<PolytreeNode> mediaTagNodes = rootNode.getPolytreeNodes();
+
+        String[] lines = new String[2 + mediaTagNodes.size()];
+        int index = 0;
+        lines[index++] = "重点媒体相关舆情数量：" + mediaTagNodes.size() + "篇";
+        lines[index++] = "涉及的媒介及媒体：";
+
+        for (PolytreeNode mediaTagNode : mediaTagNodes) {
+            if (!mediaTagNode.getPolytreeNodes().isEmpty()) {
+                lines[index++] = mediaTagNode.getNodeName() + ": " + mediaTagNode.getPolytreeNodes().get(0).getNodeName();
+            } else {
+                lines[index++] = mediaTagNode.getNodeName() + ": ";
+            }
+        }
+
+        for (String line : lines) {
+            XWPFRun xwpfRun = this.getRun(this.getParagraph());
+            xwpfRun.setText(line);
+        }
     }
 
     /**
