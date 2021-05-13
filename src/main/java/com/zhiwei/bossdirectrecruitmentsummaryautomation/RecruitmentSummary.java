@@ -192,7 +192,7 @@ public class RecruitmentSummary {
         }
 
         final PolytreeNode rootNode = this.polytree.getRoot();
-        this.summary(rootNode);
+        this.summary(rootNode, readEntities.size());
         this.getParagraph();
         this.mediaTage(rootNode);
         this.document.write(new FileOutputStream(this.outputFile));
@@ -201,12 +201,12 @@ public class RecruitmentSummary {
     /**
      * 内容摘要部分
      */
-    private void summary(PolytreeNode rootNode) {
+    private void summary(PolytreeNode rootNode, int size) {
         final List<PolytreeNode> mediaTagNodes = rootNode.getPolytreeNodes();
 
         String[] lines = new String[2 + mediaTagNodes.size()];
         int index = 0;
-        lines[index++] = "重点媒体相关舆情数量：" + mediaTagNodes.size() + "篇";
+        lines[index++] = "重点媒体相关舆情数量：" + size + "篇";
         lines[index++] = "涉及的媒介及媒体：";
 
         for (PolytreeNode mediaTagNode : mediaTagNodes) {
@@ -254,7 +254,7 @@ public class RecruitmentSummary {
         while (iterator.hasNext()) {
             PolytreeNode mediaTypeNode = iterator.next();
             xwpfRun = this.getRun(this.getParagraph());
-            xwpfRun.setText(serialNumber++ + ". 媒体名称： " + mediaTypeNode.getNodeName());
+            xwpfRun.setText("(" + serialNumber++ + ") 媒体名称： " + mediaTypeNode.getNodeName());
 
             xwpfRun = this.getRun(this.getParagraph());
             xwpfRun.setText("相关内容链接如下：");
