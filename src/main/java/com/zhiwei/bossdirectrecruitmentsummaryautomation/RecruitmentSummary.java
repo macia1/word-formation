@@ -250,10 +250,11 @@ public class RecruitmentSummary {
         // 媒体名称
         final List<PolytreeNode> mediaTypeNodes = mediaTageNode.getPolytreeNodes();
         final Iterator<PolytreeNode> iterator = mediaTypeNodes.iterator();
+        int serialNumber = 1;
         while (iterator.hasNext()) {
             PolytreeNode mediaTypeNode = iterator.next();
             xwpfRun = this.getRun(this.getParagraph());
-            xwpfRun.setText("媒体名称： " + mediaTypeNode.getNodeName());
+            xwpfRun.setText(serialNumber++ + ". 媒体名称： " + mediaTypeNode.getNodeName());
 
             xwpfRun = this.getRun(this.getParagraph());
             xwpfRun.setText("相关内容链接如下：");
