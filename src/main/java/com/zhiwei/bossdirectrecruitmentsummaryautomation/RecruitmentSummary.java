@@ -145,7 +145,7 @@ public class RecruitmentSummary {
         } else if (url.contains("xiaohongshu.com")) {
             return "小红书";
         } else if (url.contains("360kuai.com")) {
-            return "快咨询";
+            return "快资讯";
         } else if (url.contains("dcdapp.com") || url.contains("dcd.zjbyte.cn")) {
             return "懂车帝";
         } else if (url.contains("sohu.com")) {
@@ -160,7 +160,7 @@ public class RecruitmentSummary {
         } else if (url.contains("tmtpost.com")) {
             return "钛媒体";
         } else if (url.contains("yidianzixun.com")) {
-            return "一点咨询";
+            return "一点资讯";
         } else if (url.contains("weibo.com/ttarticle") || url.contains("weibo.com/article/")) {
             return "新浪专栏";
         } else if (url.contains("jiemian.com")) {
