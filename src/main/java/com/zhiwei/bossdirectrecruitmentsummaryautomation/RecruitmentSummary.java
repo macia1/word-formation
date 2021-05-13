@@ -90,7 +90,97 @@ public class RecruitmentSummary {
             throw new RecruitmentSummaryException("不存在媒介");
         }
 
+        // 纠正错误的来源
+        this.correctSource(readEntities);
+
         return readEntities;
+    }
+
+    /**
+     * 纠正错误的来源
+     */
+    private void correctSource(List<ExcelReadEntity> readEntities) {
+        readEntities.forEach(readEntity -> {
+            String source = this.matchSourceByUrl(readEntity.getUrl());
+            if (StringUtils.isNotBlank(source)) {
+                readEntity.setSource(source);
+            }
+        });
+    }
+
+    /**
+     * 根据url匹配平台
+     */
+    @SuppressWarnings("SpellCheckingInspection")
+    private String matchSourceByUrl(String url) {
+        if (url.contains("weibo.com") || url.contains("weibo.cn")) {
+            return "微博";
+        } else if (url.contains("weixin.qq.com")) {
+            return "微信公众号";
+        } else if (url.contains("www.toutiao.com") || url.contains("m.toutiao.com")) {
+            return "今日头条";
+        } else if (url.contains("zhihu.com")) {
+            return "知乎专栏";
+        } else if (url.contains("36kr.com")) {
+            return "36kr";
+        } else if (url.contains("sike.news.cn")) {
+            return "思客";
+        } else if (url.contains("jianshu.com")) {
+            return "简书";
+        } else if (url.contains("huxiu.com")) {
+            return "虎嗅";
+        } else if (url.contains("douban.com")) {
+            return "豆瓣";
+        } else if (url.contains("wap.peopleapp.com/article/rmh") || url.contains("rmh.pdnews.cn")) {
+            return "人民号";
+        } else if (url.contains("new.qq.com") || url.contains("xw.qq.com") || url.contains("page.om.qq")
+                || url.contains("kuaibao.qq.com")) {
+            return "企鹅号";
+        } else if (url.contains("feng.ifeng.com") || url.contains("ishare.ifeng.com")
+                || url.contains("fashion.ifeng.com")) {
+            return "大风号";
+        } else if (url.contains("a.mp.uc.cn") || url.contains("mparticle.uc.cn") || url.contains("m.uczzd.cn")
+                || url.contains("iflow.uc.cn/webview")) {
+            return "大鱼号";
+        } else if (url.contains("xiaohongshu.com")) {
+            return "小红书";
+        } else if (url.contains("360kuai.com")) {
+            return "快咨询";
+        } else if (url.contains("dcdapp.com") || url.contains("dcd.zjbyte.cn")) {
+            return "懂车帝";
+        } else if (url.contains("sohu.com")) {
+            return "搜狐号";
+        } else if (url.contains("thepaper.cn/newsDetail_forward")) {
+            return "澎湃号";
+        } else if (url.contains("baijiahao.baidu.com") || url.contains("mbd.baidu.com")
+                || url.contains("cpu.baidu.com")) {
+            return "百家号";
+        } else if (url.contains("dy.163.com") || url.contains("3g.163.com/dy/") || url.contains("c.m.163.com")) {
+            return "网易号";
+        } else if (url.contains("tmtpost.com")) {
+            return "钛媒体";
+        } else if (url.contains("yidianzixun.com")) {
+            return "一点咨询";
+        } else if (url.contains("weibo.com/ttarticle") || url.contains("weibo.com/article/")) {
+            return "新浪专栏";
+        } else if (url.contains("jiemian.com")) {
+            return "界面新闻";
+        } else if (url.contains("xueqiu.com")) {
+            return "雪球";
+        } else if (url.contains("3w.huanqiu.com")) {
+            return "环球号";
+        } else if (url.contains("bilibili.com")) {
+            return "bilibili";
+        } else if (url.contains("iesdouyin.com") || url.contains("aweme.snssdk.com")) {
+            return "抖音";
+        } else if (url.contains("haokan.baidu.com")) {
+            return "好看视频";
+        } else if (url.contains("kuaishou.com") || url.contains("m.gifshow.com")) {
+            return "快手";
+        } else if (url.contains("tieba.baidu.com") || url.contains("bbs.")) {
+            return "贴吧论坛";
+        }
+        return null;
     }
 
     /**
