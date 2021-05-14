@@ -52,7 +52,6 @@ public class RecruitmentSummary {
         try {
             List<ExcelReadEntity> readEntities = EasyExcel.read(this.dataSourceFile, ExcelReadEntity.class, new SyncReadListener()).sheet(0).doReadSync();
             readEntities = this.pretreatment(readEntities);
-            readEntities.forEach(log::debug);
             this.writeToWord(readEntities);
         } catch (RecruitmentSummaryException e) {
             throw e;
@@ -211,7 +210,16 @@ public class RecruitmentSummary {
 
         for (PolytreeNode mediaTagNode : mediaTagNodes) {
             if (!mediaTagNode.getPolytreeNodes().isEmpty()) {
-                lines[index++] = mediaTagNode.getNodeName() + ": " + mediaTagNode.getPolytreeNodes().get(0).getNodeName();
+                Iterator<PolytreeNode> iterator = mediaTagNode.getPolytreeNodes().iterator();
+                StringBuilder builder = new StringBuilder(mediaTagNode.getNodeName()).append(": ");
+                while (iterator.hasNext()) {
+                    PolytreeNode polytreeNode = iterator.next();
+                    builder.append(polytreeNode.getNodeName());
+                    if (iterator.hasNext()) {
+                        builder.append(", ");
+                    }
+                }
+                lines[index++] = builder.toString();
             } else {
                 lines[index++] = mediaTagNode.getNodeName() + ": ";
             }

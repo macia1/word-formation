@@ -2,6 +2,7 @@ package com.zhiwei.bossdirectrecruitmentsummaryautomation;
 
 import lombok.Getter;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -27,6 +28,12 @@ public class Polytree {
         final PolytreeNode mediaTypeNode = this.getNodeByName(mediaTageNode, readEntity.getChannel());
         // 来源
         final PolytreeNode sourceNode = this.getNodeByName(mediaTypeNode, readEntity.getSource());
+        // 排序
+        List<PolytreeNode> sourceNodes = mediaTypeNode.getPolytreeNodes();
+        sourceNodes.sort(Comparator.comparing(sourceNodeCom -> {
+            String source = sourceNodeCom.getNodeName();
+            return Weights.getWeights(source);
+        }));
         // 数据的实际节点
         sourceNode.add(readEntity);
     }
