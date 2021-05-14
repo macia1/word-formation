@@ -8,15 +8,17 @@ package com.zhiwei.bossdirectrecruitmentsummaryautomation;
  */
 public class Weights {
     public static int getWeights(String source) {
-        if ("微信".equals(source) || "微信公众号".equals(source)) {
+        if ("官网".equals(source)) {
             return 1;
-        } else if ("微博".equals(source) || "新浪微博".equals(source)) {
+        } else if ("微信".equals(source) || "微信公众号".equals(source)) {
             return 2;
+        } else if ("微博".equals(source) || "新浪微博".equals(source)) {
+            return 3;
         } else if ("网媒".equals(source)) {
-            return 4;
+            return 5;
         } else {
             // 其他
-            return 3;
+            return 4;
         }
     }
 }
