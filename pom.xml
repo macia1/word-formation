@@ -157,12 +157,14 @@
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>WordFormation</name>
-            <url>http://maven.zhiweidata.com:8081/nexus/content/repositories/snapshots</url>
+            <!--suppress HttpUrlsUsage -->
+            <url>http://192.168.0.30:8081/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>nexus-releases</id>
             <name>WordFormation</name>
-            <url>http://maven.zhiweidata.com:8081/nexus/content/groups/public</url>
+            <!--suppress HttpUrlsUsage -->
+            <url>http://192.168.0.30:8081/nexus/content/groups/public</url>
         </repository>
     </distributionManagement>
 </project>
