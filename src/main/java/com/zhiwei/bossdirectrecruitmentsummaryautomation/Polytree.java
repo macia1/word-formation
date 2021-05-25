@@ -44,7 +44,7 @@ public class Polytree {
     public PolytreeNode getNodeByName(PolytreeNode polytreeNode, String nodeName) {
         List<PolytreeNode> polytreeNodes = polytreeNode.getPolytreeNodes();
         for (PolytreeNode element : polytreeNodes) {
-            if (nodeName.equals(element.getNodeName())) {
+            if (nodeName.equalsIgnoreCase(element.getNodeName())) {
                 return element;
             }
         }

@@ -2,6 +2,7 @@ package com.zhiwei.bossdirectrecruitmentsummaryautomation;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.event.SyncReadListener;
+import com.zhiwei.util.UrlUtil;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
@@ -56,7 +57,7 @@ public class RecruitmentSummary {
         } catch (RecruitmentSummaryException e) {
             throw e;
         } catch (Exception e) {
-            throw new RecruitmentSummaryException(e.getMessage(), e);
+            e.printStackTrace();
         }
     }
 
@@ -310,8 +311,16 @@ public class RecruitmentSummary {
             xwpfRun = this.getRun(this.getParagraph());
             xwpfRun.setText(readEntity.getTitle());
 
-            xwpfRun = this.document.createParagraph().createHyperlinkRun(readEntity.getUrl());
-            xwpfRun.setText(readEntity.getUrl());
+            String urlString = readEntity.getUrl();
+            try {
+                urlString = UrlUtil.escapeUrl(urlString);
+                xwpfRun = this.document.createParagraph().createHyperlinkRun(urlString);
+            } catch (Exception e) {
+                log.warn(e.getMessage(), e);
+                xwpfRun = this.document.createParagraph().createRun();
+                xwpfRun.setText(urlString);
+            }
+            xwpfRun.setText(urlString);
             xwpfRun.setColor("0000FF");
             xwpfRun.setUnderline(UnderlinePatterns.SINGLE);
             if (dataIterator.hasNext()) {

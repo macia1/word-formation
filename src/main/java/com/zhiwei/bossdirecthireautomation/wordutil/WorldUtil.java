@@ -3,6 +3,7 @@ package com.zhiwei.bossdirecthireautomation.wordutil;
 import com.zhiwei.bossdirecthireautomation.tree.EventExcelEntity;
 import com.zhiwei.bossdirecthireautomation.tree.PolyTreeNode;
 import com.zhiwei.bossdirecthireautomation.tree.PolyTreeUtil;
+import com.zhiwei.util.UrlUtil;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.opc.PackageRelationship;
 import org.apache.poi.xwpf.usermodel.*;
@@ -152,7 +153,12 @@ public class WorldUtil extends XWPFDocument {
             // 从候选列表获得权重最高的
             EventExcelEntity eventExcelEntity = this.selectByInfluence(selects);
             // 输出
-            this.createLink(eventExcelEntity.getTitle(), eventExcelEntity.getUrl(), paragraph);
+            try {
+                this.createLink(eventExcelEntity.getTitle(), UrlUtil.escapeUrl(eventExcelEntity.getUrl()), paragraph);
+            } catch (Exception e) {
+                log.warn(e.getMessage(), e);
+                this.writeDefaultString(eventExcelEntity.getTitle(), paragraph);
+            }
             run = this.writeDefaultString("（传播量：" + event.getDataNodeSize() + "）", paragraph);// 输出传播量
             run.setBold(true);
             run.addCarriageReturn();
@@ -294,7 +300,12 @@ public class WorldUtil extends XWPFDocument {
             }
             this.writeDefaultString(title, paragraph);
             // 写出超链接
-            this.createLink(manuscript.getNodeName(), aData.getUrl(), paragraph);
+            try {
+                this.createLink(manuscript.getNodeName(), UrlUtil.escapeUrl(aData.getUrl()), paragraph);
+            } catch (Exception e) {
+                log.warn(e.getMessage(), e);
+                this.writeDefaultString(manuscript.getNodeName(), paragraph);
+            }
             // 写出传播量
             title = "(传播量：" + manuscript.getDataNodeSize() + ")";
             this.writeDefaultString(title, paragraph).addCarriageReturn();// 输出并换行
