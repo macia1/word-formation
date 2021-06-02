@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -44,6 +46,17 @@ public class NanjingSpecialDaily extends XWPFDocument {
             throw new NanjingSpecialDailyException(sourcePath + ": 这是一个空文件！");
         }
         checked(nanjingSpecialDailyEntities);
+
+        // 过滤不需要的url
+        nanjingSpecialDailyEntities = nanjingSpecialDailyEntities.stream().filter(nanjingSpecialDailyEntity -> {
+            for (String filterUrl : UrlConfig.filterUrls) {
+                if (nanjingSpecialDailyEntity.getUrl().toLowerCase(Locale.ROOT).contains(filterUrl.toLowerCase(Locale.ROOT))) {
+                    return false;
+                }
+            }
+            return true;
+        }).collect(Collectors.toList());
+
         NanjingSpecialDaily nanjingSpecialDaily = new NanjingSpecialDaily(nanjingSpecialDailyEntities, writePath);
         nanjingSpecialDaily.generateWord();
         nanjingSpecialDaily.write();
@@ -103,24 +116,29 @@ public class NanjingSpecialDaily extends XWPFDocument {
      * 摘要
      */
     private void summary(NanjingSpecialDailyEntity nanjingSpecialDailyEntity) {
-        String word = nanjingSpecialDailyEntity.getWord();
-        String text = nanjingSpecialDailyEntity.getText();
-        String[] sentences = text.split("。");
-        int wordSentence = 0;
-        for (int i = 0; i < sentences.length; i++) {
-            if (sentences[i].toLowerCase().contains(word.toLowerCase())) {
-                wordSentence = i;
-                break;
+        final String word = nanjingSpecialDailyEntity.getWord();
+        final String text = nanjingSpecialDailyEntity.getText();
+        final StringBuilder summary = new StringBuilder();
+
+        int wordIndex = text.indexOf(word);
+        // 文本截取范围
+        if (wordIndex > 0) {
+            int startIndex, endIndex;
+            startIndex = Math.max(wordIndex - 20, 0);
+            // 寻找关键词之后的第二个句号
+            endIndex = text.indexOf('。', wordIndex);
+            if (endIndex > 0) {
+                endIndex = text.indexOf('。', endIndex + 1);
+            }
+            // 摘要最长只能有100个字
+            if (endIndex > 0 && endIndex - startIndex <= 100) {
+                summary.append(text, startIndex, endIndex + 1);
+            } else {
+                endIndex = Math.min(startIndex + 100, text.length() - 1);
+                summary.append(text, startIndex, endIndex + 1);
             }
         }
-        StringBuilder summary = new StringBuilder("");
-        if (wordSentence != 0) {
-            summary.append(sentences[wordSentence]).append("。");
-            // 不是最后一句
-            if (wordSentence < sentences.length - 1) {
-                summary.append(sentences[wordSentence + 1]).append("。");
-            }
-        }
+
         summary.append("（").append(FAST_DATE_FORMAT.format(nanjingSpecialDailyEntity.getTime())).append("）");
 
         XWPFParagraph paragraph = super.createParagraph();
@@ -131,7 +149,7 @@ public class NanjingSpecialDaily extends XWPFDocument {
         run.setFontFamily("微软雅黑");
 
         run = paragraph.createRun();
-        run.setText(summary.toString());
+        run.setText(summary.toString().replaceAll("\u3000", ""));
         run.setFontSize(ContentFont.小四.getPoundValue());
         run.setFontFamily("微软雅黑");
     }
