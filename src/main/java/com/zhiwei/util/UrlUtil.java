@@ -54,6 +54,7 @@ public class UrlUtil {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(escapePath(url));
         if (url.contains("?")) {
+            stringBuilder.append("?");
             stringBuilder.append(escapeParameter(url));
         }
         return stringBuilder.toString();
