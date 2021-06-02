@@ -131,12 +131,10 @@ public class NanjingSpecialDaily extends XWPFDocument {
                 endIndex = text.indexOf('。', endIndex + 1);
             }
             // 摘要最长只能有100个字
-            if (endIndex > 0 && endIndex - startIndex <= 100) {
-                summary.append(text, startIndex, endIndex + 1);
-            } else {
+            if (endIndex <= 0 || endIndex - startIndex > 100) {
                 endIndex = Math.min(startIndex + 100, text.length() - 1);
-                summary.append(text, startIndex, endIndex + 1);
             }
+            summary.append(text, startIndex, endIndex + 1);
         }
 
         summary.append("（").append(FAST_DATE_FORMAT.format(nanjingSpecialDailyEntity.getTime())).append("）");
