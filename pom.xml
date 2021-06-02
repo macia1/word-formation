@@ -6,7 +6,7 @@
 
     <groupId>com.zhiwei</groupId>
     <artifactId>word-formation</artifactId>
-    <version>4.5-SNAPSHOT</version>
+    <version>4.6-SNAPSHOT</version>
     <description>word自动生成程序</description>
     <inceptionYear>2020/9/15</inceptionYear>
     <properties>
