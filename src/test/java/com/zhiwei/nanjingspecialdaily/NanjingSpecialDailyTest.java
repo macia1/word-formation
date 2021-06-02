@@ -2,11 +2,7 @@ package com.zhiwei.nanjingspecialdaily;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author aszswaz
