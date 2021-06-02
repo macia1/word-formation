@@ -2,11 +2,7 @@ package com.zhiwei.nanjingspecialdaily;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author aszswaz
@@ -22,6 +18,6 @@ class NanjingSpecialDailyTest {
     @Test
     void start() throws NanjingSpecialDailyException, IOException {
         String writePath = "target/" + NanjingSpecialDaily.class.getSimpleName() + ".docx";
-        NanjingSpecialDaily.start("source/试 爱美客 标题聚类（6月1日）.xlsx", writePath);
+        NanjingSpecialDaily.start("source/试 爱美客 标题聚类（6月1日）(1).xlsx", writePath);
     }
 }
