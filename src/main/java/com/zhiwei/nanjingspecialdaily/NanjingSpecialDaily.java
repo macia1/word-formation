@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 /**
  * 南京专项日报
@@ -45,6 +46,15 @@ public class NanjingSpecialDaily extends XWPFDocument {
         if (isNull(nanjingSpecialDailyEntities) || nanjingSpecialDailyEntities.isEmpty()) {
             throw new NanjingSpecialDailyException(sourcePath + ": 这是一个空文件！");
         }
+
+        // 过滤空白行
+        nanjingSpecialDailyEntities = nanjingSpecialDailyEntities.stream().filter(nanjingSpecialDailyEntity ->
+                isNoneBlank(nanjingSpecialDailyEntity.getTitle())
+                        && isNoneBlank(nanjingSpecialDailyEntity.getUrl())
+                        && isNoneBlank(nanjingSpecialDailyEntity.getWord())
+                        && isNoneBlank(nanjingSpecialDailyEntity.getText())
+        ).collect(Collectors.toList());
+
         checked(nanjingSpecialDailyEntities);
 
         // 过滤不需要的url

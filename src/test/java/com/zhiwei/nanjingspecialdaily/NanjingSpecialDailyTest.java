@@ -18,6 +18,6 @@ class NanjingSpecialDailyTest {
     @Test
     void start() throws NanjingSpecialDailyException, IOException {
         String writePath = "target/" + NanjingSpecialDaily.class.getSimpleName() + ".docx";
-        NanjingSpecialDaily.start("source/试 爱美客 标题聚类（6月1日）.xlsx", writePath);
+        NanjingSpecialDaily.start("source/试 爱美客 标题聚类（6月1日）(1).xlsx", writePath);
     }
 }
